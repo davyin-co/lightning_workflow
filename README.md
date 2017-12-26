@@ -1,6 +1,10 @@
-# Lightning API
+# Lightning Workflow
 
-Lightning API provides a standard API with authentication and authorization that allows for easy ingestion of content by other applications. It primarily makes use of the json:api and OAuth2 standards via the [JSON API](https://www.drupal.org/project/jsonapi) and [Simple Oauth](https://www.drupal.org/project/simple_oauth) contrib modules.
+Lightning Workflow includes tools for building organization-specific content
+workflows. Out of the box, Lightning Workflow gives you the ability to manage
+content in one of four workflow states (draft, needs review, published, and
+archived). You can create as many additional states as you like and define
+transitions between them. It's also possible to schedule content to be
+transitioned between states at a specific future date and time.
 
 Currently, this module is not supported outside of the Lightning profile.
-
