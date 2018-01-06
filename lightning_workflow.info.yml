@@ -7,5 +7,4 @@ dependencies:
   - content_moderation
   - lightning_core
 components:
-  - lightning_scheduled_updates
   - lightning_scheduler
