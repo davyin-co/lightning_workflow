@@ -145,7 +145,8 @@ function lightning_workflow_modules_installed(array $modules) {
   if (\Drupal::isConfigSyncing()) {
     return;
   }
-  elseif (in_array('lightning_roles', $modules)) {
+
+  if (in_array('lightning_roles', $modules, TRUE)) {
     \Drupal::service('lightning.content_roles')
       ->grantPermissions('creator', [
         'view any unpublished content',
@@ -158,6 +159,21 @@ function lightning_workflow_modules_installed(array $modules) {
         'use editorial transition review',
         'use editorial transition archive',
       ]);
+  }
+
+  if (in_array('lightning_dev', $modules, TRUE)) {
+    \Drupal::service('module_installer')->install(['diff']);
+
+    // Add moderation to the page content type.
+    /** @var NodeTypeInterface $node_type */
+    $node_type = entity_load('node_type', 'page');
+    $node_type->setThirdPartySetting('lightning_workflow', 'workflow', 'editorial');
+    lightning_workflow_node_type_insert($node_type);
+
+    // Allow the content view to filter by moderation state.
+    $view = entity_load('view', 'content')->enforceIsNew();
+    lightning_workflow_view_presave($view);
+    $view->enforceIsNew(FALSE)->save();
   }
 }
 
