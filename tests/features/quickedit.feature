@@ -8,13 +8,13 @@ Feature: Integration of workflows with Quick Edit
 
   @f2beeeda
   Scenario: Quick Edit should be available for unpublished content
-    Given I am logged in as a user with the "create page content, edit own page content, view own unpublished content, access in-place editing, access contextual links, use editorial transition create_new_draft" permissions
+    Given I am logged in as a user with the "access in-place editing, access contextual links, use editorial transition create_new_draft, view any unpublished content, edit any page content" permissions
     When I visit "/foobar"
     Then Quick Edit should be enabled
 
   @b62c6213
   Scenario: Quick Edit should be disabled for published content
-    Given I am logged in as a user with the "create page content, edit own page content, use editorial transition publish, view own unpublished content, access in-place editing, access contextual links" permissions
+    Given I am logged in as a user with the "use editorial transition publish, view own unpublished content, access in-place editing, access contextual links, view any unpublished content, edit any page content" permissions
     When I visit "/foobar"
     And I visit the edit form
     And I select "published" from "moderation_state[0][state]"

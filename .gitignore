@@ -1,3 +1,4 @@
 /composer.lock
 docroot/
 vendor/
+/.behat.yml

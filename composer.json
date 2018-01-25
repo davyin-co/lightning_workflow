@@ -34,9 +34,12 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "@composer push",
-            "@composer drupal-scaffold",
-            "PhantomInstaller\\Installer::installPhantomJS"
+            "@push",
+            "@drupal-scaffold"
+        ],
+        "post-update-cmd": [
+            "@push",
+            "@drupal-scaffold"
         ],
         "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
         "nuke": "rm -r -f docroot vendor",

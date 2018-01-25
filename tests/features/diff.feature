@@ -3,7 +3,7 @@ Feature: Diffing different revisions of content
 
   @5b4ba63e
   Scenario: Diffing two node revisions
-    Given I am logged in as a user with the "create page content, edit own page content, view page revisions" permissions
+    Given I am logged in as a user with the "administrator" role
     And page content:
       | title       | body           | path         | moderation_state |
       | Pastafazoul | First revision | /pastafazoul | draft            |
