@@ -23,7 +23,7 @@
         "acquia/lightning_dev": "dev-8.x-1.x"
     },
     "require": {
-        "drupal/core": "~8.4.3",
+        "drupal/core": "^8.4.3",
         "cweagans/composer-patches": "^1.6.4",
         "drupal-composer/drupal-scaffold": "^2.0.0",
         "oomphinc/composer-installers-extender": "^1.1",
