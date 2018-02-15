@@ -1,4 +1,4 @@
-@lightning @api @workflow
+@lightning @api @lightning_workflow
 Feature: Scheduled updates to content
 
   @a4291af5

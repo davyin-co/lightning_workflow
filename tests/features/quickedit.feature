@@ -1,4 +1,4 @@
-@lightning @api @workflow @javascript
+@lightning @api @lightning_workflow @javascript
 Feature: Integration of workflows with Quick Edit
 
   Background:

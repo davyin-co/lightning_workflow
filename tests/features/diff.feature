@@ -1,4 +1,4 @@
-@lightning @workflow @api
+@lightning @lightning_workflow @api
 Feature: Diffing different revisions of content
 
   @5b4ba63e
