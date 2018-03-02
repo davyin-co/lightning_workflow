@@ -162,7 +162,16 @@ function lightning_workflow_modules_installed(array $modules) {
   }
 
   if (in_array('lightning_dev', $modules, TRUE)) {
-    \Drupal::service('module_installer')->install(['diff']);
+    /** @var \Drupal\Core\Extension\ModuleInstallerInterface $module_installer */
+    $module_installer = \Drupal::service('module_installer');
+    // Lightning Workflow optionally integrates with Diff, and for testing
+    // purposes we'd like to enable that integration.
+    $module_installer->install(['diff']);
+    // BigPipe breaks a couple of non-JS tests which expect to find local task
+    // links, but receive BigPipe placeholders instead. This is a bit of a
+    // sledgehammer approach, but until it's possible to disable a module during
+    // a single test, it's the best we can do.
+    $module_installer->uninstall(['big_pipe']);
 
     // Add moderation to the page content type.
     /** @var NodeTypeInterface $node_type */

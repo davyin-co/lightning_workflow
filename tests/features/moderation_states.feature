@@ -26,7 +26,7 @@ Feature: Workflow moderation states
     And page content:
       | title             | path   | moderation_state |
       | Moderation Test 3 | /mod-3 | review           |
-    And I visit "/mod-3"
+    When I visit "/mod-3"
     And I visit the edit form
     And I select "Published" from "moderation_state[0][state]"
     And I press "Save"

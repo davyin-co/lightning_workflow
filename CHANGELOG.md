@@ -1,3 +1,6 @@
+## 1.0.0
+* No changes since last release.
+
 ## 1.0.0-rc2
 * Remove legacy update code.
 
