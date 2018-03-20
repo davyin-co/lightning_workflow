@@ -1,0 +1,103 @@
+<?php
+
+/**
+ * Replaces scheduler base fields and migrates their values.
+ */
+function lightning_scheduler_update_8001() {
+  // Reset the hook implementation cache so that our entity presave hook will
+  // be picked up.
+  \Drupal::moduleHandler()->resetImplementations();
+
+  $definition_manager = \Drupal::entityDefinitionUpdateManager();
+
+  foreach (\Drupal::entityTypeManager()->getDefinitions() as $entity_type) {
+    // Generate the base field definitions, if the entity type supports them.
+    $base_fields = lightning_scheduler_entity_base_field_info($entity_type);
+    if (empty($base_fields)) {
+      continue;
+    }
+
+    // Install the new base fields.
+    foreach ($base_fields as $field_name => $field_definition) {
+      $definition_manager->installFieldStorageDefinition($field_name, $entity_type->id(), 'lightning_scheduler', $field_definition);
+    }
+
+    $fields = [
+      $entity_type->getKey('id'),
+      'scheduled_publication',
+      'scheduled_moderation_state',
+    ];
+    if ($entity_type->isRevisionable()) {
+      $vid_key = $entity_type->getKey('revision');
+      array_push($fields, $vid_key);
+    }
+    if ($entity_type->isTranslatable()) {
+      $language_key = $entity_type->getKey('langcode');
+      array_push($fields, $language_key);
+    }
+    $id_key = reset($fields);
+
+    $storage = \Drupal::entityTypeManager()->getStorage($entity_type->id());
+
+    $items = \Drupal::database()
+      ->select($entity_type->getRevisionDataTable() ?: $entity_type->getDataTable(), 't')
+      ->fields('t', $fields)
+      ->isNotNull('scheduled_publication')
+      ->isNotNull('scheduled_moderation_state')
+      ->execute();
+
+    foreach ($items as $item) {
+      /** @var \Drupal\Core\Entity\ContentEntityInterface $entity */
+      $entity = isset($vid_key)
+        ? $storage->loadRevision($item->$vid_key)
+        : $storage->load($item->$id_key);
+
+      // A horrible hack to work around Content Moderation's opinions being a
+      // little too strong. See lightning_scheduler_entity_presave().
+      $entity->existingRevisionId = $entity->getRevisionId();
+
+      if (isset($language_key)) {
+        $entity = $entity->getTranslation($item->$language_key);
+      }
+
+      // Deep in the SqlContentEntityStorage handler, I found a real weird
+      // thing: field values are not actually written to the database during
+      // save unless they've changed. VURT DA FURK! This quirk can totally break
+      // this migration under certain circumstances, but ensuring that the
+      // original entity is set, with different values on the fields to be
+      // written, prevents this.
+      $entity->original = $storage->loadUnchanged($item->$id_key)
+        ->set('scheduled_transition_date', NULL)
+        ->set('scheduled_transition_state', NULL);
+
+      $entity
+        ->set('scheduled_transition_date', $item->scheduled_publication)
+        ->set('scheduled_transition_state', $item->scheduled_moderation_state)
+        ->save();
+    }
+
+    $kill = $definition_manager->getFieldStorageDefinition('scheduled_publication', $entity_type->id());
+    $definition_manager->uninstallFieldStorageDefinition($kill);
+
+    $kill = $definition_manager->getFieldStorageDefinition('scheduled_moderation_state', $entity_type->id());
+    $definition_manager->uninstallFieldStorageDefinition($kill);
+  }
+}
+
+/**
+ * Implements hook_update_dependencies().
+ */
+function lightning_scheduler_update_dependencies() {
+  return [
+    'block_content' => [
+      8400 => [
+        'lightning_scheduler' => 8001,
+      ],
+    ],
+    'lightning_scheduler' => [
+      8001 => [
+        'system' => 8501,
+      ],
+    ],
+  ];
+}
