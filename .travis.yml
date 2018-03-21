@@ -80,8 +80,6 @@ install:
   - lightning update $VERSION
 
 before_script:
-  - drush php:eval 'echo date_default_timezone_get() . "\n";'
-  - drush php:eval 'echo drupal_get_user_timezone() . "\n";'
   - drush runserver --default-server=builtin 8080 &>/dev/null &
   - jdk_switcher use oraclejdk8
   - selenium-server-standalone -port 4444 -log selenium.log &
