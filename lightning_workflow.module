@@ -5,7 +5,7 @@
  * Provides workflow enhancements for Drupal.
  */
 
-use Drupal\content_moderation\Plugin\WorkflowType\ContentModeration;
+use Drupal\content_moderation\Plugin\WorkflowType\ContentModerationInterface;
 use Drupal\Core\Entity\EntityInterface;
 use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
@@ -37,11 +37,16 @@ function lightning_workflow_node_type_insert(NodeTypeInterface $node_type) {
   }
 
   $plugin = $workflow->getTypePlugin();
-  if ($plugin instanceof ContentModeration) {
-    $configuration = $plugin->getConfiguration();
-    $configuration['entity_types']['node'][] = $node_type->id();
-    $plugin->setConfiguration($configuration);
+  if ($plugin instanceof ContentModerationInterface) {
+    $rebuild = ! in_array('node', $plugin->getEntityTypes(), TRUE);
+    $plugin->addEntityTypeAndBundle('node', $node_type->id());
     $workflow->save();
+
+    // We need to rebuild all routes because Content Moderation needs to ensure
+    // that edit forms load the latest revision.
+    if ($rebuild) {
+      Drupal::service('router.builder')->rebuild();
+    }
   }
 }
 
