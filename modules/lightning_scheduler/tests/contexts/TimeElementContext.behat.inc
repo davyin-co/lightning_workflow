@@ -107,4 +107,30 @@ class TimeElementContext extends DrupalSubContextBase {
     $this->setPastTime($field, "00:00:00:$n");
   }
 
+  /**
+   * Runs cron by invoking the /cron URL.
+   *
+   * @When I run cron over HTTP
+   */
+  public function cron() {
+    $cron_key = \Drupal::state()->get('system.cron_key');
+
+    $this->visitPath('/cron/' . $cron_key);
+  }
+
+  /**
+   * Asserts that a number of elements match a CSS selector.
+   *
+   * @param string $selector
+   *   The selector.
+   * @param int $n
+   *   The number of elements expected to match the selector.
+   *
+   * @Then exactly :n element(s) should match :selector
+   */
+  public function matchExactly($selector, $n) {
+    $this->assertSession()
+      ->elementsCount('css', $selector, $n);
+  }
+
 }

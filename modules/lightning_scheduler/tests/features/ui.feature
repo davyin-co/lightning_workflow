@@ -24,25 +24,23 @@ Feature: Lightning Scheduler UI
     And I should see "Change to Archived on September 19, 2038 at 8:57 AM"
     And I should see the link "add another"
 
-  @79b5d968
-  Scenario: Hiding past transitions
+  @e0c3690a
+  Scenario: Removing a previously saved transition
     When I click "Schedule a transition"
     And I select "Published" from "Scheduled moderation state"
-    And I set "Scheduled transition time" to 10 seconds ago
-    And I click "Save transition"
-    And I click "add another"
-    And I select "Archived" from "Scheduled moderation state"
-    And I enter "11-5-2038" for "Scheduled transition date"
+    And I enter "9-19-2038" for "Scheduled transition date"
+    And I enter "08:57:00AM" for "Scheduled transition time"
     And I click "Save transition"
     And I press "Save"
-    And I run cron
     And I visit the edit form
-    Then I should see "Current state Published"
-    And I should not see "Change to Published on"
-    But I should see "Change to Archived on"
+    And I click "Remove transition to Published on September 19, 2038 at 8:57 AM"
+    And I press "Save"
+    And I visit the edit form
+    Then I should not see "Change to Published on September 19, 2038 at 8:57 AM"
+    And I should see the link "Schedule a transition"
 
   @769caa15
-  Scenario: Canceling and removing moderation state transition
+  Scenario: Canceling and removing moderation state transitions
     When I click "Schedule a transition"
     And I select "Published" from "Scheduled moderation state"
     And I enter "5-4-2038" for "Scheduled transition date"

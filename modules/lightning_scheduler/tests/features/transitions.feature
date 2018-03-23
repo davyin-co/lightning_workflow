@@ -14,9 +14,22 @@ Feature: Scheduling transitions on content
     And I click "Save transition"
     And I press "Save"
     And I wait 15 seconds
-    And I run cron
+    And I run cron over HTTP
     And I visit the edit form
     Then I should see "Current state Published"
+    And exactly 1 element should match ".scheduled-transition.past"
+
+  @bafaf901
+  Scenario: Automatically publishing in the past
+    When I click "Schedule a transition"
+    And I select "Published" from "Scheduled moderation state"
+    And I set "Scheduled transition time" to 10 seconds ago
+    And I click "Save transition"
+    And I press "Save"
+    And I run cron over HTTP
+    And I visit the edit form
+    Then I should see "Current state Published"
+    And exactly 1 element should match ".scheduled-transition.past"
 
   @368f0045
   Scenario: Automatically publishing, then unpublishing, in the future
@@ -30,11 +43,30 @@ Feature: Scheduling transitions on content
     And I click "Save transition"
     And I press "Save"
     And I wait 15 seconds
-    And I run cron
+    And I run cron over HTTP
     And I wait 10 seconds
-    And I run cron
+    And I run cron over HTTP
     And I visit the edit form
     Then I should see "Current state Archived"
+    And exactly 2 elements should match ".scheduled-transition.past"
+
+  @19678505
+  Scenario: Skipping a invalid transition scheduled in the past
+    When I click "Schedule a transition"
+    And I select "Published" from "Scheduled moderation state"
+    And I set "Scheduled transition time" to 20 seconds ago
+    And I click "Save transition"
+    And I click "add another"
+    And I select "Archived" from "Scheduled moderation state"
+    And I set "Scheduled transition time" to 10 seconds ago
+    And I click "Save transition"
+    And I press "Save"
+    And I run cron over HTTP
+    And I visit the edit form
+    # It will still be in the draft state because the transition should resolve
+    # to Draft -> Archived, which doesn't exist.
+    Then I should see "Current state Draft"
+    And exactly 2 elements should match ".scheduled-transition.past"
 
   @4e8a6957
   Scenario: Automatically publishing when there is a pending revision
@@ -49,6 +81,6 @@ Feature: Scheduling transitions on content
     And I click "Save transition"
     And I press "Save"
     And I wait 15 seconds
-    And I run cron
+    And I run cron over HTTP
     And I click "View"
     Then I should see "MC Hammer"

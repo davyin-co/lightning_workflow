@@ -14,12 +14,14 @@ use Drupal\lightning_scheduler\TransitionSet;
  * Implements hook_cron().
  */
 function lightning_scheduler_cron() {
-  $field_map = \Drupal::service('entity_field.manager')->getFieldMap();
+  $field_map = Drupal::service('entity_field.manager')->getFieldMap();
 
   /** @var \Drupal\lightning_scheduler\TransitionManager $transition_manager */
-  $transition_manager = \Drupal::service('lightning_scheduler.transition_manager');
+  $transition_manager = Drupal::service('lightning_scheduler.transition_manager');
 
   $start = new DrupalDateTime('now', DateTimeItemInterface::STORAGE_TIMEZONE);
+  $now = Drupal::time()->getRequestTime();
+  $start->setTimestamp($now);
 
   foreach ($field_map as $entity_type_id => $fields) {
     if (isset($fields['scheduled_transition_state'], $fields['scheduled_transition_date'])) {
@@ -42,12 +44,20 @@ function lightning_scheduler_field_widget_moderation_state_default_form_alter(ar
   }
 
   /** @var \Drupal\lightning_scheduler\TransitionManager $transition_manager */
-  $transition_manager = \Drupal::service('lightning_scheduler.transition_manager');
+  $transition_manager = Drupal::service('lightning_scheduler.transition_manager');
   $states = $transition_manager->getStates($entity);
 
+  // The latest revision, if there is one, is the canonical source of truth
+  // regarding scheduled transitions.
+  $latest_revision = Drupal::service('content_moderation.moderation_information')
+    ->getLatestRevision(
+      $entity->getEntityTypeId(),
+      $entity->id()
+    ) ?: $entity;
+
   $transition_set = new TransitionSet(
-    $entity->get('scheduled_transition_date'),
-    $entity->get('scheduled_transition_state')
+    $latest_revision->get('scheduled_transition_date'),
+    $latest_revision->get('scheduled_transition_state')
   );
 
   $element['scheduled_transitions'] = [
@@ -55,6 +65,7 @@ function lightning_scheduler_field_widget_moderation_state_default_form_alter(ar
     '#tag' => 'TransitionSet',
     '#attributes' => [
       'states' => Json::encode($states),
+      'since' => date('c', Drupal::state()->get('system.cron_last')),
     ],
     '#attached' => [
       'library' => ['lightning_scheduler/widget'],
@@ -76,7 +87,7 @@ function lightning_scheduler_field_widget_moderation_state_default_form_alter(ar
 
   // If in development mode, we should be able to schedule transitions in
   // increments of seconds.
-  if (\Drupal::moduleHandler()->moduleExists('lightning_dev')) {
+  if (Drupal::moduleHandler()->moduleExists('lightning_dev')) {
     $element['scheduled_transitions']['#attributes']['step'] = 1;
   }
 }
@@ -105,7 +116,7 @@ function lightning_scheduler_process_component_input(array $element, FormStateIn
  */
 function lightning_scheduler_entity_base_field_info(EntityTypeInterface $entity_type) {
   $fields = [];
-  $moderation_info = \Drupal::service('content_moderation.moderation_information');
+  $moderation_info = Drupal::service('content_moderation.moderation_information');
 
   if ($moderation_info->canModerateEntitiesOfEntityType($entity_type)) {
     $fields['scheduled_transition_date'] = BaseFieldDefinition::create('datetime')

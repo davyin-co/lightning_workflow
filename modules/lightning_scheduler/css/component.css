@@ -1,3 +1,7 @@
+.scheduled-transition.past {
+    color: lightgrey;
+}
+
 .scheduled-transition label {
     display: inline;
     font-weight: normal;
