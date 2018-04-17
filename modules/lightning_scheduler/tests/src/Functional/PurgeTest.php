@@ -10,21 +10,20 @@ use Drupal\node\NodeInterface;
  * @group lightning_workflow
  * @group lightning_scheduler
  */
-class BaseFieldMigrationTest extends MigrationTestBase {
+class PurgeTest extends MigrationTestBase {
 
   public function test() {
     parent::test();
 
     $assert = $this->assertSession();
-    $assert->pageTextContains('You are about to migrate scheduled transitions for all custom block entities and content items.');
-    $assert->elementExists('named', ['link', 'switch to maintenance mode']);
-    $assert->buttonExists('Continue')->press();
-    $this->checkForMetaRefresh();
-
-    $assert->pageTextContains('All migrations are completed.');
-    $assert->buttonNotExists('Continue');
-    $assert->buttonNotExists('Cancel');
-
+    $assert->pageTextContains('Purge without migrating');
+    $assert->optionExists('purge[entity_type_id]', 'block_content');
+    $assert->optionExists('purge[entity_type_id]', 'node');
+    $assert->fieldExists('purge[entity_type_id]')->setValue('node');
+    $assert->buttonExists('Purge')->press();
+    $assert->pageTextContains('Purged scheduled transitions for content items.');
+    $assert->optionExists('purge[entity_type_id]', 'block_content');
+    $assert->optionNotExists('purge[entity_type_id]', 'node');
     // The migration will have deleted the old base fields, so we need to clear
     // the entity field cache to keep up.
     $this->container->get('entity_field.manager')->clearCachedFieldDefinitions();
@@ -34,42 +33,41 @@ class BaseFieldMigrationTest extends MigrationTestBase {
     /** @var NodeInterface $node */
     $node = $storage->load(1);
     $this->assertInstanceOf(NodeInterface::class, $node);
-    $this->assertNode($node, '2018-09-19 08:57', 'published');
+    $this->assertNode($node);
     $this->assertTrue($node->hasTranslation('fr'));
-    $this->assertNode($node->getTranslation('fr'), '2018-09-04 20:15', 'published');
+    $this->assertNode($node->getTranslation('fr'));
 
     // Test the default revision, loaded explicitly.
     $node = $storage->loadRevision(5);
     $this->assertInstanceOf(NodeInterface::class, $node);
-    $this->assertNode($node, '2018-09-19 08:57', 'published');
+    $this->assertNode($node);
     $this->assertTrue($node->hasTranslation('fr'));
-    $this->assertNode($node->getTranslation('fr'), '2018-09-04 20:15', 'published');
+    $this->assertNode($node->getTranslation('fr'));
 
     // Test previous revisions too.
     $node = $storage->loadRevision(4);
     $this->assertInstanceOf(NodeInterface::class, $node);
-    $this->assertNode($node, '2018-09-19 08:57', 'published');
+    $this->assertNode($node);
     $this->assertTrue($node->hasTranslation('fr'));
-    $this->assertNode($node->getTranslation('fr'), '2018-11-05 02:30', 'published');
+    $this->assertNode($node->getTranslation('fr'));
 
     $node = $storage->loadRevision(3);
     $this->assertInstanceOf(NodeInterface::class, $node);
-    $this->assertNode($node, '2018-09-19 08:57', 'published');
+    $this->assertNode($node);
     $this->assertFalse($node->hasTranslation('fr'));
 
     $node = $storage->loadRevision(2);
     $this->assertInstanceOf(NodeInterface::class, $node);
-    $this->assertNode($node, '2018-09-05 17:00', 'published');
+    $this->assertNode($node);
     $this->assertFalse($node->hasTranslation('fr'));
 
     $node = $storage->loadRevision(1);
     $this->assertInstanceOf(NodeInterface::class, $node);
-    $this->assertTrue($node->get('scheduled_transition_date')->isEmpty());
-    $this->assertTrue($node->get('scheduled_transition_state')->isEmpty());
+    $this->assertTrue($node);
     $this->assertFalse($node->hasTranslation('fr'));
   }
 
-  protected function assertNode(NodeInterface $node, $expected_date, $expected_state) {
+  protected function assertNode(NodeInterface $node) {
     $this->assertFalse($node->hasField('scheduled_publication'));
     $this->assertFalse($node->hasField('scheduled_moderation_state'));
 
@@ -94,14 +92,8 @@ class BaseFieldMigrationTest extends MigrationTestBase {
         ->getCardinality()
     );
 
-    $this->assertFalse($date->isEmpty());
-    $this->assertFalse($state->isEmpty());
-
-    $date_options = [
-      'timezone' => 'America/New_York',
-    ];
-    $this->assertSame($expected_date, $date->date->format('Y-m-d H:i', $date_options));
-    $this->assertSame($expected_state, $state->value);
+    $this->assertTrue($date->isEmpty());
+    $this->assertTrue($state->isEmpty());
   }
 
 }

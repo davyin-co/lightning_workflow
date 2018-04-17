@@ -5,8 +5,9 @@
   can also schedule several transitions at once. Transition data is now stored
   in fields called scheduled_transition_date and scheduled_transition_state,
   which replace the old scheduled_moderation_state and scheduled_publication
-  fields. (These fields will be removed as part of the update path, and their
-  data will be migrated into the new fields.) (Issues #2935715, #2935198, #2935105, #2936757, #2954329, and #2954348)
+  fields. A UI is also provided so you can migrate scheduled transition data
+  from the old fields into the new ones, one entity type at a time. You will
+  see a link to this UI once you complete the update path. (Issues #2935715, #2935198, #2935105, #2936757, #2954329, and #2954348)
 
 ## 1.2.0
 * If you have Lightning Roles

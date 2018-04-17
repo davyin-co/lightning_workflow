@@ -7,3 +7,12 @@ services:
       - '@entity_type.manager'
       - '@logger.channel.cron'
       - '@string_translation'
+
+  lightning_scheduler.migrator:
+    class: '\Drupal\lightning_scheduler\Migrator'
+    arguments:
+      - '@entity_type.manager'
+      - '@database'
+      - '@state'
+      - '@messenger'
+      - '@string_translation'

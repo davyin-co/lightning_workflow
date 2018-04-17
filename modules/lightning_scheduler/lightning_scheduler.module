@@ -118,6 +118,8 @@ function lightning_scheduler_entity_base_field_info(EntityTypeInterface $entity_
   $fields = [];
   $moderation_info = Drupal::service('content_moderation.moderation_information');
 
+  $migrations = Drupal::service('lightning_scheduler.migrator')->getMigrations();
+
   if ($moderation_info->canModerateEntitiesOfEntityType($entity_type)) {
     $fields['scheduled_transition_date'] = BaseFieldDefinition::create('datetime')
       ->setDisplayConfigurable('view', FALSE)
@@ -132,6 +134,22 @@ function lightning_scheduler_entity_base_field_info(EntityTypeInterface $entity_
       ->setTranslatable(TRUE)
       ->setRevisionable(TRUE)
       ->setCardinality(FieldStorageDefinitionInterface::CARDINALITY_UNLIMITED);
+
+    // If the entity type has not yet been migrated, we need to continue to
+    // define the base fields from the 1.x version.
+    if (in_array($entity_type->id(), $migrations, TRUE)) {
+      $fields['scheduled_publication'] = BaseFieldDefinition::create('datetime')
+        ->setDisplayConfigurable('view', FALSE)
+        ->setDisplayConfigurable('form', FALSE)
+        ->setTranslatable(TRUE)
+        ->setRevisionable(TRUE);
+
+      $fields['scheduled_moderation_state'] = BaseFieldDefinition::create('string')
+        ->setDisplayConfigurable('view', FALSE)
+        ->setDisplayConfigurable('form', FALSE)
+        ->setTranslatable(TRUE)
+        ->setRevisionable(TRUE);
+    }
   }
 
   return $fields;
