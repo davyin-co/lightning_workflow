@@ -92,3 +92,26 @@ function lightning_scheduler_update_dependencies() {
     ],
   ];
 }
+
+/**
+ * Implements hook_requirements().
+ */
+function lightning_scheduler_requirements($phase) {
+  $requirements = [];
+
+  if ($phase === 'runtime') {
+    $migrations = Drupal::service('lightning_scheduler.migrator')->getMigrations();
+
+    if ($migrations) {
+      $requirements['lightning_scheduler_migrations'] = [
+        'severity' => REQUIREMENT_INFO,
+        'title' => t('Lightning Scheduler data migration'),
+        'description' => t('Some content has not yet been migrated into the new base fields installed by Lightning Scheduler. Visit <a href=":url">this page</a> to migrate the data.', [
+          ':url' => Url::fromRoute('lightning_scheduler.migrate')->toString(),
+        ]),
+      ];
+    }
+  }
+
+  return $requirements;
+}

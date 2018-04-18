@@ -16,16 +16,20 @@ class PurgeTest extends MigrationTestBase {
     parent::test();
 
     $assert = $this->assertSession();
+    $assert->pageTextContains('You are about to migrate scheduled transitions for all custom block entities and content items.');
+
+    // Assert that the purge-related fields are present and accounted for.
     $assert->pageTextContains('Purge without migrating');
-    $assert->optionExists('purge[entity_type_id]', 'block_content');
-    $assert->optionExists('purge[entity_type_id]', 'node');
-    $assert->fieldExists('purge[entity_type_id]')->setValue('node');
+    $select = $assert->fieldExists('purge[entity_type_id]')->getAttribute('name');
+    $this->assertSame('block_content', $assert->optionExists($select, 'custom block entities')->getValue());
+    $this->assertSame('node', $assert->optionExists($select, 'content items')->getValue());
+    $this->getSession()->getPage()->fillField($select, 'node');
     $assert->buttonExists('Purge')->press();
     $assert->pageTextContains('Purged scheduled transitions for content items.');
     $assert->pageTextNotContains('All migrations are completed.');
-    $assert->pageTextContains('You are about to migrate scheduled transitions');
-    $assert->optionExists('purge[entity_type_id]', 'block_content');
-    $assert->optionNotExists('purge[entity_type_id]', 'node');
+    $assert->pageTextContains('You are about to migrate scheduled transitions for all custom block entities.');
+    $assert->optionExists($select, 'custom block entities');
+    $assert->optionNotExists($select, 'content items');
 
     $storage = $this->postMigration('node');
 
