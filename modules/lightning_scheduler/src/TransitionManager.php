@@ -255,6 +255,7 @@ class TransitionManager {
     // scheduled now or in the past.
     $IDs = $storage->getQuery()
       ->latestRevision()
+      ->accessCheck(FALSE)
       ->condition('scheduled_transition_date.value', $now, '<=')
       ->execute();
 

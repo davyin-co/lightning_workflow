@@ -32,6 +32,14 @@ class ScheduledTransitionTest extends BrowserTestBase {
 
     $this->drupalCreateContentType(['type' => 'page']);
 
+    // Due to a known core bug, rebuilding the node access table will break the
+    // entity query in TransitionManager::getTransitionable(). The workaround is
+    // for the query to specifically disable access checking, which it should be
+    // doing anyway because transitions need to be processed irrespective of
+    // user access.
+    // @see https://www.drupal.org/project/drupal/issues/2823957
+    node_access_rebuild();
+
     $workflow = Workflow::load('editorial');
     /** @var \Drupal\content_moderation\Plugin\WorkflowType\ContentModerationInterface $plugin */
     $plugin = $workflow->getTypePlugin();
