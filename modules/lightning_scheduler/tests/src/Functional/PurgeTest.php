@@ -22,13 +22,12 @@ class PurgeTest extends MigrationTestBase {
     $assert->fieldExists('purge[entity_type_id]')->setValue('node');
     $assert->buttonExists('Purge')->press();
     $assert->pageTextContains('Purged scheduled transitions for content items.');
+    $assert->pageTextNotContains('All migrations are completed.');
+    $assert->pageTextContains('You are about to migrate scheduled transitions');
     $assert->optionExists('purge[entity_type_id]', 'block_content');
     $assert->optionNotExists('purge[entity_type_id]', 'node');
-    // The migration will have deleted the old base fields, so we need to clear
-    // the entity field cache to keep up.
-    $this->container->get('entity_field.manager')->clearCachedFieldDefinitions();
 
-    $storage = $this->container->get('entity_type.manager')->getStorage('node');
+    $storage = $this->postMigration('node');
 
     /** @var NodeInterface $node */
     $node = $storage->load(1);

@@ -33,4 +33,27 @@ abstract class MigrationTestBase extends UpdatePathTestBase {
     $assert->elementExists('named', ['link', 'switch to maintenance mode']);
   }
 
+  /**
+   * Runs post-migration assertions for an entity type.
+   *
+   * @param string $entity_type_id
+   *   The entity type ID.
+   *
+   * @return \Drupal\Core\Entity\EntityStorageInterface
+   *   The storage handler for the entity type.
+   */
+  protected function postMigration($entity_type_id) {
+    // Now that a migration is completed, old base fields will no longer be
+    // defined. Therefore, we need to clear the entity field cache in order to
+    // properly load the changed content, and there should be pending entity
+    // definition updates (the old base fields need to be uninstalled).
+    $this->container->get('entity_field.manager')->clearCachedFieldDefinitions();
+
+    $this->assertTrue(
+      $this->container->get('entity.definition_update_manager')->needsUpdates()
+    );
+
+    return $this->container->get('entity_type.manager')->getStorage($entity_type_id);
+  }
+
 }

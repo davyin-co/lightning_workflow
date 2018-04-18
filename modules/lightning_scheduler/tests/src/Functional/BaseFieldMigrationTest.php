@@ -22,14 +22,11 @@ class BaseFieldMigrationTest extends MigrationTestBase {
     $this->checkForMetaRefresh();
 
     $assert->pageTextContains('All migrations are completed.');
+    $assert->pageTextNotContains('You are about to migrate scheduled transitions');
     $assert->buttonNotExists('Continue');
     $assert->buttonNotExists('Cancel');
 
-    // The migration will have deleted the old base fields, so we need to clear
-    // the entity field cache to keep up.
-    $this->container->get('entity_field.manager')->clearCachedFieldDefinitions();
-
-    $storage = $this->container->get('entity_type.manager')->getStorage('node');
+    $storage = $this->postMigration('node');
 
     /** @var NodeInterface $node */
     $node = $storage->load(1);

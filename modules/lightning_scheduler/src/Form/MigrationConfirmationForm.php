@@ -85,15 +85,14 @@ class MigrationConfirmationForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form = parent::buildForm($form, $form_state);
-
     $migrations = $this->getMigrations();
 
     if (empty($migrations)) {
       $this->messenger()->addStatus($this->t('Hey, nice! All migrations are completed.'));
-      $form['actions']['#access'] = FALSE;
       return $form;
     }
+
+    $form = parent::buildForm($form, $form_state);
 
     $form['purge'] = [
       '#type' => 'details',
