@@ -246,7 +246,7 @@ export default class extends Component
 
         return (
           <span>
-              <a title={ t('Save transition') } href="#" onClick={ onSave }>{ t('save') }</a>
+              <button className="button" title={ t('Save transition') } onClick={ onSave }>{ t('Save') }</button>
               &nbsp;{ t('or') }&nbsp;
               <a title={ t('Cancel transition') } href="#" onClick={ onCancel }>{ t('cancel') }</a>
           </span>
@@ -290,7 +290,7 @@ export default class extends Component
 
         const link_text = this.state.transitions.length
             ? t('add another')
-            : t('Schedule a transition');
+            : t('Schedule a status change');
 
         return <a href="#" onClick={ onAdd }>{ link_text }</a>
     }
