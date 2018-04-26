@@ -1,4 +1,4 @@
-## 2.0.0
+## 2.0.0-rc1
 * Lightning Scheduler has been completely rewritten and has a new UI. Users
   with permission to schedule various workflow state transitions will be able
   to schedule transitions to take place at any date and time they want. They
