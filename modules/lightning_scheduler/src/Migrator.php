@@ -12,7 +12,13 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\Core\StringTranslation\StringTranslationTrait;
 use Drupal\Core\StringTranslation\TranslationInterface;
+use Drupal\Core\Url;
+use Drupal\lightning_core\Element;
 
+/**
+ * This class is final because the migration is not an API and should not be
+ * extended or re-used.
+ */
 final class Migrator {
 
   use StringTranslationTrait;
@@ -91,11 +97,16 @@ final class Migrator {
   }
 
   /**
-   * Returns all content entity types which need to run the migration.
+   * Returns all content entity types which need to be migrated.
+   *
+   * @param string[] $limit
+   *   (optional) An array of entity type IDs. If given, only those entity types
+   *   will be considered.
    *
    * @return \Drupal\Core\Entity\EntityTypeInterface[]
+   *   The entity types that need to be migrated.
    */
-  public function getMigrationsNeeded() {
+  public function getEntityTypesToMigrate(array $limit = []) {
     // Only content entities which have been marked as needing migration are
     // considered.
     $filter = function (EntityTypeInterface $entity_type) {
@@ -103,7 +114,7 @@ final class Migrator {
     };
     $entity_types = array_filter($this->entityTypeManager->getDefinitions(), $filter);
 
-    $migrations = $this->getMigrations();
+    $migrations = $limit ?: $this->getMigrations();
     $migrations = array_flip($migrations);
 
     return array_intersect_key($entity_types, $migrations);
@@ -115,7 +126,7 @@ final class Migrator {
    * @param string $entity_type_id
    *   The entity type ID.
    *
-   * @return \Drupal\Core\Database\Query\SelectInterface
+   * @return \Drupal\Core\Entity\Query\QueryInterface
    *   The prepared query.
    */
   public function query($entity_type_id) {
@@ -140,6 +151,35 @@ final class Migrator {
       ->fields($table, $fields)
       ->isNotNull('scheduled_publication')
       ->isNotNull('scheduled_moderation_state');
+  }
+
+  /**
+   * Migrates all entities of a specific type.
+   *
+   * @param string $entity_type_id
+   *   The entity type ID to migrate.
+   * @param callable $callback
+   *   (optional) A callback to invoke after each item is migrated. It receives
+   *   the entity type ID, the number of items migrated so far, the item itself
+   *   (which will be an \stdClass object), and the migrator service.
+   *
+   * @return int
+   *   The number of items that were migrated.
+   */
+  public function migrateAll($entity_type_id, callable $callback = NULL) {
+    $items = $this->query($entity_type_id)->execute();
+    $count = 0;
+
+    foreach ($items as $item) {
+      $this->migrate($entity_type_id, $item);
+
+      if ($callback) {
+        $callback($entity_type_id, ++$count, $item, $this);
+      }
+    }
+    $this->completeMigration($entity_type_id);
+
+    return $count;
   }
 
   /**
@@ -277,6 +317,50 @@ final class Migrator {
     // Base fields have been reverted, and the migration is now complete.
     $migrations = array_diff($this->getMigrations(), [$entity_type_id]);
     $this->setMigrations($migrations);
+  }
+
+  /**
+   * Generates an informational message to be displayed before starting the
+   * migration for a set of entity types.
+   *
+   * @param EntityTypeInterface[] $entity_types
+   *   The entity types that will be migrated.
+   * @param bool $html
+   *   Whether to include HTML tags in the message.
+   *
+   * @return \Drupal\Core\StringTranslation\TranslatableMarkup
+   *   The generated message.
+   */
+  public function generatePreMigrationMessage(array $entity_types, $html = TRUE) {
+    $message = 'You are about to migrate scheduled transitions for all @entity_types. This will modify your existing content and may take a long time if you have a huge site with tens of thousands of pieces of content. <strong>You cannot undo this</strong>, so you may want to <strong>back up your database</strong> and <a href=":maintenance_mode">switch to maintenance mode</a> before continuing.';
+    if ($html == FALSE) {
+      $message = strip_tags($message);
+    }
+
+    $variables = [
+      '@entity_types' =>
+        Element::oxford($this->entityTypeOptions($entity_types)),
+      ':maintenance_mode' =>
+        Url::fromRoute('system.site_maintenance_mode')->toString(),
+    ];
+    return $this->t($message, $variables);
+  }
+
+  /**
+   * Converts a set of entity type definitions to key/value options.
+   *
+   * @param EntityTypeInterface[] $entity_types
+   *   The entity type definitions.
+   *
+   * @return string[]
+   *   The entity type labels, keyed by entity type ID.
+   */
+  public function entityTypeOptions(array $entity_types) {
+    $to_option = function (EntityTypeInterface $entity_type) {
+      return $entity_type->getPluralLabel();
+    };
+
+    return array_map($to_option, $entity_types);
   }
 
 }

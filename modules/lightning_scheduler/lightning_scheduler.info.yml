@@ -6,3 +6,4 @@ package: Lightning
 dependencies:
   - content_moderation
   - datetime
+  - lightning_core

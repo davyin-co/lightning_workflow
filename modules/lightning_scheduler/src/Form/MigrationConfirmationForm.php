@@ -3,19 +3,23 @@
 namespace Drupal\lightning_scheduler\Form;
 
 use Drupal\Core\Access\AccessResult;
-use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Form\ConfirmFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
-use Drupal\lightning_core\Element;
 use Drupal\lightning_scheduler\Migrator;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class MigrationConfirmationForm extends ConfirmFormBase {
+/**
+ * Provides a UI for migrating or purging scheduled transition data.
+ *
+ * This class is final for the same reason that the Migrator service is: the
+ * migration is not an API and should not be extended or re-used.
+ */
+final class MigrationConfirmationForm extends ConfirmFormBase {
 
   /**
-   * The migration service.
+   * The migrator service.
    *
    * @var \Drupal\lightning_scheduler\Migrator
    */
@@ -25,7 +29,7 @@ class MigrationConfirmationForm extends ConfirmFormBase {
    * MigrationConfirmationForm constructor.
    *
    * @param \Drupal\lightning_scheduler\Migrator $migrator
-   *   The migration service.
+   *   The migrator service.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    *   (optional) The messenger service.
    */
@@ -45,20 +49,6 @@ class MigrationConfirmationForm extends ConfirmFormBase {
       $container->get('lightning_scheduler.migrator'),
       $container->get('messenger')
     );
-  }
-
-  /**
-   * Returns the entity types that need to be migrated.
-   *
-   * @return string[]
-   *   The labels of the entity types that need to be migrated, keyed by entity
-   *   type ID.
-   */
-  protected function getMigrations() {
-    $map = function (EntityTypeInterface $entity_type) {
-      return $entity_type->getPluralLabel();
-    };
-    return array_map($map, $this->migrator->getMigrationsNeeded());
   }
 
   /**
@@ -85,9 +75,9 @@ class MigrationConfirmationForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $migrations = $this->getMigrations();
+    $entity_types = $this->migrator->getEntityTypesToMigrate();
 
-    if (empty($migrations)) {
+    if (empty($entity_types)) {
       $this->messenger()->addStatus($this->t('Hey, nice! All migrations are completed.'));
       return $form;
     }
@@ -98,12 +88,12 @@ class MigrationConfirmationForm extends ConfirmFormBase {
       '#type' => 'details',
       '#collapsible' => TRUE,
       '#title' => $this->t('Purge without migrating'),
-      '#description' => $this->t('Purging will allow you to discard existing scheduled transitions for a particular entity type without running the migration. This is useful if you don\'t have any transitions scheduled that you want to migrate. <strong>This will permanently delete scheduled transitions and cannot be undone.</strong>'),
+      '#description' => $this->t('Purging will allow you to discard existing scheduled transitions for a particular entity type without running the migration. This is useful if you don\'t have any scheduled transitions that you want to migrate. <strong>This will permanently delete scheduled transitions and cannot be undone.</strong>'),
       '#tree' => TRUE,
       'entity_type_id' => [
         '#type' => 'select',
         '#title' => $this->t('Entity type to purge'),
-        '#options' => $migrations,
+        '#options' => $this->migrator->entityTypeOptions($entity_types),
       ],
       'actions' => [
         '#type' => 'actions',
@@ -130,15 +120,8 @@ class MigrationConfirmationForm extends ConfirmFormBase {
    * {@inheritdoc}
    */
   public function getDescription() {
-    $migrations = $this->getMigrations();
-
-    return $this->t(
-      'You are about to migrate scheduled transitions for all @entity_types. This will modify your existing content and may take a long time if you have a huge site with tens of thousands of pieces of content. <strong>You cannot undo this</strong>, so you may want to <strong>back up your database</strong> and <a href="@maintenance_mode">switch to maintenance mode</a> before continuing.',
-      [
-        '@entity_types' => Element::oxford($migrations),
-        '@maintenance_mode' => Url::fromRoute('system.site_maintenance_mode')->toString(),
-      ]
-    );
+    $entity_types = $this->migrator->getEntityTypesToMigrate();
+    return $this->migrator->generatePreMigrationMessage($entity_types);
   }
 
   /**
@@ -163,7 +146,7 @@ class MigrationConfirmationForm extends ConfirmFormBase {
 
     $callback = [static::class, 'migrate'];
 
-    foreach (array_keys($this->migrator->getMigrationsNeeded()) as $entity_type_id) {
+    foreach (array_keys($this->migrator->getEntityTypesToMigrate()) as $entity_type_id) {
       foreach ($this->migrator->query($entity_type_id)->execute() as $item) {
         $arguments = [$entity_type_id, $item];
         array_push($operations, [$callback, $arguments]);
@@ -206,9 +189,7 @@ class MigrationConfirmationForm extends ConfirmFormBase {
 
     $this->migrator->purge($entity_type_id, 'scheduled_publication');
     $this->migrator->purge($entity_type_id, 'scheduled_moderation_state');
-
-    // Mark the migration as completed.
-    static::complete($entity_type_id);
+    $this->migrator->completeMigration($entity_type_id);
 
     $message = $this->t('Purged scheduled transitions for @entity_type.', [
       '@entity_type' => $form['purge']['entity_type_id']['#options'][$entity_type_id],
