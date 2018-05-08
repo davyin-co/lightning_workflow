@@ -8,6 +8,28 @@ use Webmozart\Assert\Assert;
 class TimeElementContext extends DrupalSubContextBase {
 
   /**
+   * @BeforeScenario
+   */
+  public function setUp() {
+    $server_tz = timezone_open(date_default_timezone_get());
+    $drupal_tz = timezone_open(drupal_get_user_timezone());
+
+    $now = date_create();
+    $server_offset = $server_tz->getOffset($now);
+    $drupal_offset = $drupal_tz->getOffset($now);
+
+    // Use the "later" time zone. Meaning: if the server is ahead of Drupal, use
+    // the server time zone. Conversely, if the server is behind Drupal, use the
+    // Drupal time zone.
+    if ($server_offset > $drupal_offset) {
+      ini_set('date.timezone', $server_tz->getName());
+    }
+    elseif ($drupal_offset > $server_offset) {
+      ini_set('date.timezone', $drupal_tz->getName());
+    }
+  }
+
+  /**
    * Converts an interval to a number of seconds.
    *
    * @param $interval
