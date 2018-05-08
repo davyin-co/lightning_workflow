@@ -8,20 +8,10 @@ use Webmozart\Assert\Assert;
 class TimeElementContext extends DrupalSubContextBase {
 
   /**
-   * The time zone offset of the virtual "user" which is performing the test.
-   *
-   * This is automatically set from the value of drupal_get_user_timezone().
-   *
-   * @var int
-   */
-  protected $tzOffset = 0;
-
-  /**
    * @BeforeScenario
    */
   public function setUp() {
-    $this->tzOffset = timezone_open(drupal_get_user_timezone())
-      ->getOffset(date_create());
+    ini_set('date.timezone', drupal_get_user_timezone());
   }
 
   /**
@@ -59,7 +49,7 @@ class TimeElementContext extends DrupalSubContextBase {
    *   The formatted time, in the form HH:MM:SSA.
    */
   protected function format($ts) {
-    return date('h:i:sA', $ts + $this->tzOffset);
+    return date('h:i:sA', $ts);
   }
 
   /**
