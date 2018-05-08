@@ -1,3 +1,8 @@
+## 2.0.0-rc2
+* Lightning Scheduler now clears cached state data (site state, not
+  moderation states) during cron runs, in order to fix a bug where
+  scheduled transitions in the past would not display correctly. (GitHub #30)
+
 ## 2.0.0-rc1
 * Lightning Scheduler has been completely rewritten and has a new UI. Users
   with permission to schedule various workflow state transitions will be able
