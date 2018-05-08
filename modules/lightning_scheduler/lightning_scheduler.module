@@ -1,6 +1,7 @@
 <?php
 
 use Drupal\Component\Serialization\Json;
+use Drupal\Core\Cache\CacheCollectorInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
@@ -55,6 +56,19 @@ function lightning_scheduler_cron() {
     if (isset($fields['scheduled_transition_state'], $fields['scheduled_transition_date'])) {
       $transition_manager->process($entity_type_id, $start);
     }
+  }
+
+  // At some point, core started caching state values, both statically and
+  // persistently. Unfortunately, the cron service does not explicitly persist
+  // the system.cron_last variable, which means that subsequent reads of
+  // system.cron_last might return an outdated value, thus breaking any code
+  // which is sensitive to the last cron run time (e.g., this module). This
+  // should be fixed in core at some point, but for now we can work around it by
+  // ensuring the state cache is cleared during cron, ensuring that all of its
+  // values are persisted.
+  $state = Drupal::state();
+  if ($state instanceof CacheCollectorInterface) {
+    $state->resetCache();
   }
 }
 
