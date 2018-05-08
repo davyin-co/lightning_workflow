@@ -8,25 +8,20 @@ use Webmozart\Assert\Assert;
 class TimeElementContext extends DrupalSubContextBase {
 
   /**
+   * The time zone offset of the virtual "user" which is performing the test.
+   *
+   * This is automatically set from the value of drupal_get_user_timezone().
+   *
+   * @var int
+   */
+  protected $tzOffset = 0;
+
+  /**
    * @BeforeScenario
    */
   public function setUp() {
-    $server_tz = timezone_open(date_default_timezone_get());
-    $drupal_tz = timezone_open(drupal_get_user_timezone());
-
-    $now = date_create();
-    $server_offset = $server_tz->getOffset($now);
-    $drupal_offset = $drupal_tz->getOffset($now);
-
-    // Use the "later" time zone. Meaning: if the server is ahead of Drupal, use
-    // the server time zone. Conversely, if the server is behind Drupal, use the
-    // Drupal time zone.
-    if ($server_offset > $drupal_offset) {
-      ini_set('date.timezone', $server_tz->getName());
-    }
-    elseif ($drupal_offset > $server_offset) {
-      ini_set('date.timezone', $drupal_tz->getName());
-    }
+    $this->tzOffset = timezone_open(drupal_get_user_timezone())
+      ->getOffset(date_create());
   }
 
   /**
@@ -55,7 +50,7 @@ class TimeElementContext extends DrupalSubContextBase {
   }
 
   /**
-   * Converts a time stamp to a formatted time.
+   * Converts a time stamp to a formatted, localized time.
    *
    * @param int $ts
    *   The time stamp to convert.
@@ -64,7 +59,7 @@ class TimeElementContext extends DrupalSubContextBase {
    *   The formatted time, in the form HH:MM:SSA.
    */
   protected function format($ts) {
-    return date('h:i:sA', $ts);
+    return date('h:i:sA', $ts + $this->tzOffset);
   }
 
   /**

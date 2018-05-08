@@ -69,6 +69,7 @@ install:
   - lightning update $VERSION
 
 before_script:
+  - drush config:set system.date timezone.default $TZ --yes
   - drush runserver --default-server=builtin 8080 &>/dev/null &
   - jdk_switcher use oraclejdk8
   - selenium-server-standalone -port 4444 -log selenium.log &
