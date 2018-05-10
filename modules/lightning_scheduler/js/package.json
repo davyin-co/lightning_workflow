@@ -10,6 +10,7 @@
     "build": "babel-external-helpers | minify --mangle false > dist/helpers.js && webpack --optimize-minimize --progress --display-reasons --display-modules --config webpack.js"
   },
   "dependencies": {
+    "core-js": "^2.5.6",
     "dateformat": "^3.0.3",
     "react": "^16.2.0",
     "react-dom": "^16.2.0"

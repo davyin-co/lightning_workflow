@@ -7,7 +7,7 @@ const env_options = {
 
 module.exports = {
 
-    entry: './index.js',
+    entry: ['core-js/fn/object/entries', './index.js'],
 
     output: {
         filename: 'index.js',
