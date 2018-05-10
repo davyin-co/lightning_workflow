@@ -2,6 +2,8 @@
 
 namespace Acquia\LightningExtension\Context;
 
+use Behat\Mink\Element\ElementInterface;
+use Drupal\Core\Url;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;
 use Webmozart\Assert\Assert;
 
@@ -40,16 +42,61 @@ class TimeElementContext extends DrupalSubContextBase {
   }
 
   /**
-   * Converts a time stamp to a formatted, localized time.
+   * Sets the value of a date element.
    *
-   * @param int $ts
-   *   The time stamp to convert.
+   * @param string $field
+   *   The field to set.
+   * @param string $value
+   *   The date to set, in YYYY-MM-DD format.
    *
-   * @return string
-   *   The formatted time, in the form HH:MM:SSA.
+   * @When I set the :field date to :value
    */
-  protected function format($ts) {
-    return date('h:i:sA', $ts);
+  public function setDate($field, $value) {
+    $field = $this->assertSession()->fieldExists($field);
+    $field->setValue($value);
+    $this->triggerEvent($field, 'change');
+  }
+
+  /**
+   * Sets the value of a time element.
+   *
+   * @param string $field
+   *   The field to set.
+   * @param mixed $value
+   *   The time stamp to set, or an arbitrary time in HH:MM:SS format.
+   *
+   * @When I set the :field time to :value
+   */
+  public function setTime($field, $value) {
+    if (is_numeric($value)) {
+      $value = date('H:i:s', $value);
+    }
+
+    $field = $this->assertSession()->fieldExists($field);
+    $field->setValue($value);
+    $this->triggerEvent($field, 'change');
+  }
+
+  /**
+   * Simulates a React event on an element.
+   *
+   * @param \Behat\Mink\Element\ElementInterface $element
+   *   The element.
+   * @param string $event
+   *   The event to simulate.
+   */
+  protected function triggerEvent(ElementInterface $element, $event) {
+    $element = $element->getXpath();
+
+    // If React's testing utilities are present, simulate the event so that all
+    // values will be updated successfully.
+    $js = <<<END
+if (ReactTestUtils) {
+  const element = document.evaluate('$element', document, null).iterateNext();
+  ReactTestUtils.Simulate.$event(element);
+}
+END;
+    $this->getSession()->executeScript($js);
   }
 
   /**
@@ -63,10 +110,7 @@ class TimeElementContext extends DrupalSubContextBase {
    * @When I set :field to :interval from now
    */
   public function setFutureTime($field, $interval) {
-    $value = time() + $this->toSeconds($interval);
-    $value = $this->format($value);
-
-    $this->assertSession()->fieldExists($field)->setValue($value);
+    $this->setTime($field, time() + $this->toSeconds($interval));
   }
 
   /**
@@ -80,10 +124,7 @@ class TimeElementContext extends DrupalSubContextBase {
    * @When I set :field to :interval ago
    */
   public function setPastTime($field, $interval) {
-    $value = time() - $this->toSeconds($interval);
-    $value = $this->format($value);
-
-    $this->assertSession()->fieldExists($field)->setValue($value);
+    $this->setTime($field, time() - $this->toSeconds($interval));
   }
 
   /**
@@ -120,9 +161,13 @@ class TimeElementContext extends DrupalSubContextBase {
    * @When I run cron over HTTP
    */
   public function cron() {
-    $cron_key = \Drupal::state()->get('system.cron_key');
+    $url = Url::fromRoute('system.cron', [
+      'key' => \Drupal::state()->get('system.cron_key'),
+    ]);
+    $url = $url->toString();
+    $url = $this->locatePath($url);
 
-    $this->visitPath('/cron/' . $cron_key);
+    \Drupal::httpClient()->get($url);
   }
 
   /**

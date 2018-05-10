@@ -1,14 +1,14 @@
 react:
   js:
-    'https://unpkg.com/react@16.0.0/umd/react.production.min.js':
+    'https://unpkg.com/react@16.3.2/umd/react.production.min.js':
       external: true
       attributes:
-        integrity: 'sha384-hqL/av/jdhwexbPMcoB6jzLfvBwAgAo5jKJzMpirHW+FBIg769b9IP70lr90RZm0'
+        integrity: 'sha384-ssmDfleGSKwIS4GlKJM3gqgSQtp6pzFAc7y8f0r2Mfjn+EsHt4UqrSM8EXKZCAFU'
         crossorigin: anonymous
-    'https://unpkg.com/react-dom@16.0.0/umd/react-dom.production.min.js':
+    'https://unpkg.com/react-dom@16.3.2/umd/react-dom.production.min.js':
       external: true
       attributes:
-        integrity: 'sha384-kjhh69IEDwwyMp0lkZrgOdyB7/WPfpc7HXMM1os2N9afCk+DD8z0vDBKn42fgIRZ'
+        integrity: 'sha384-9HNXemlU8cB7vTVvdlZbsut+fnt78jK2amX1CCxkLlamx+yD4gde8D6DJe+QkHm3'
         crossorigin: anonymous
 
 widget:
