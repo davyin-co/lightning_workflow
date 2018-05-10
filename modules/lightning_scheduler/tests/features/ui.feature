@@ -8,16 +8,8 @@ Feature: Lightning Scheduler UI
 
   @a55f7706
   Scenario: Scheduling moderation state transitions
-    When I click "Schedule a status change"
-    And I select "Published" from "Scheduled moderation state"
-    And I set the "Scheduled transition date" date to "2038-05-04"
-    And I set the "Scheduled transition time" time to "18:00:00"
-    And I press "Save transition"
-    And I click "add another"
-    And I select "Archived" from "Scheduled moderation state"
-    And I set the "Scheduled transition date" date to "2038-09-19"
-    And I set the "Scheduled transition time" time to "08:57:00"
-    And I press "Save transition"
+    When I schedule a transition to Published on "5/4/2038" at "6 PM"
+    And I schedule a transition to Archived on "9/19/2038" at "8:57 AM"
     And I press "Save"
     And I visit the edit form
     Then I should see "Change to Published on May 4, 2038 at 6:00 PM"
@@ -26,11 +18,7 @@ Feature: Lightning Scheduler UI
 
   @e0c3690a
   Scenario: Removing a previously saved transition
-    When I click "Schedule a status change"
-    And I select "Published" from "Scheduled moderation state"
-    And I set the "Scheduled transition date" date to "2038-09-19"
-    And I set the "Scheduled transition time" time to "08:57:00"
-    And I press "Save transition"
+    When I schedule a transition to Published on "9/19/2038" at "8:57 AM"
     And I press "Save"
     And I visit the edit form
     And I click "Remove transition to Published on September 19, 2038 at 8:57 AM"
@@ -41,20 +29,9 @@ Feature: Lightning Scheduler UI
 
   @769caa15
   Scenario: Canceling and removing moderation state transitions
-    When I click "Schedule a status change"
-    And I select "Published" from "Scheduled moderation state"
-    And I set the "Scheduled transition date" date to "2038-05-04"
-    And I set the "Scheduled transition time" time to "18:00:00"
-    And I press "Save transition"
-    And I click "add another"
-    And I select "Archived" from "Scheduled moderation state"
-    And I set the "Scheduled transition date" date to "2038-09-19"
-    And I set the "Scheduled transition time" time to "08:57:00"
-    And I press "Save transition"
-    And I click "add another"
-    And I select "Published" from "Scheduled moderation state"
-    And I set the "Scheduled transition date" date to "2038-10-31"
-    And I set the "Scheduled transition time" time to "09:00:00"
+    When I schedule a transition to Published on "5/4/2038" at "6 PM"
+    And I schedule a transition to Archived on "9/19/2038" at "8:57 AM"
+    And I prepare a transition to Published on "10/31/2038" at "9 AM"
     And I click "Cancel transition"
     And I click "Remove transition to Archived on September 19, 2038 at 8:57 AM"
     And I press "Save"

@@ -8,10 +8,7 @@ Feature: Scheduling transitions on content
 
   @55c3c017
   Scenario: Automatically publishing in the future
-    When I click "Schedule a status change"
-    And I select "Published" from "Scheduled moderation state"
-    And I set "Scheduled transition time" to 10 seconds from now
-    And I press "Save transition"
+    When I schedule a transition to Published in 10 seconds
     And I press "Save"
     And I wait 15 seconds
     And I run cron over HTTP
@@ -21,10 +18,7 @@ Feature: Scheduling transitions on content
 
   @bafaf901
   Scenario: Automatically publishing in the past
-    When I click "Schedule a status change"
-    And I select "Published" from "Scheduled moderation state"
-    And I set "Scheduled transition time" to 10 seconds ago
-    And I press "Save transition"
+    When I schedule a transition to Published 10 seconds ago
     And I press "Save"
     And I run cron over HTTP
     And I visit the edit form
@@ -33,14 +27,8 @@ Feature: Scheduling transitions on content
 
   @368f0045
   Scenario: Automatically publishing, then unpublishing, in the future
-    When I click "Schedule a status change"
-    And I select "Published" from "Scheduled moderation state"
-    And I set "Scheduled transition time" to 10 seconds from now
-    And I press "Save transition"
-    And I click "add another"
-    And I select "Archived" from "Scheduled moderation state"
-    And I set "Scheduled transition time" to 20 seconds from now
-    And I press "Save transition"
+    When I schedule a transition to Published in 10 seconds
+    And I schedule a transition to Archived in 20 seconds
     And I press "Save"
     And I wait 15 seconds
     And I run cron over HTTP
@@ -52,14 +40,8 @@ Feature: Scheduling transitions on content
 
   @19678505
   Scenario: Skipping a invalid transition scheduled in the past
-    When I click "Schedule a status change"
-    And I select "Published" from "Scheduled moderation state"
-    And I set "Scheduled transition time" to 20 seconds ago
-    And I press "Save transition"
-    And I click "add another"
-    And I select "Archived" from "Scheduled moderation state"
-    And I set "Scheduled transition time" to 10 seconds ago
-    And I press "Save transition"
+    When I schedule a transition to Published 20 seconds ago
+    And I schedule a transition to Archived 10 seconds ago
     And I press "Save"
     And I run cron over HTTP
     And I visit the edit form
@@ -75,10 +57,7 @@ Feature: Scheduling transitions on content
     And I visit the edit form
     And I enter "MC Hammer" for "Title"
     And I select "Draft" from "moderation_state[0][state]"
-    And I click "Schedule a status change"
-    And I select "Published" from "Scheduled moderation state"
-    And I set "Scheduled transition time" to 10 seconds from now
-    And I press "Save transition"
+    And I schedule a transition to Published in 10 seconds
     And I press "Save"
     And I wait 15 seconds
     And I run cron over HTTP
