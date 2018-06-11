@@ -1,3 +1,7 @@
+## 2.0.0
+* Scheduler UI is not compatible with Internet Explorer.
+* Remove duplicate step definitions.
+
 ## 2.0.0-rc2
 * Lightning Scheduler now clears cached state data (site state, not
   moderation states) during cron runs, in order to fix a bug where
