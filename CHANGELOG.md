@@ -1,5 +1,5 @@
 ## 2.0.0
-* Scheduler UI is not compatible with Internet Explorer.
+* Scheduler UI is now compatible with Internet Explorer.
 * Remove duplicate step definitions.
 
 ## 2.0.0-rc2
