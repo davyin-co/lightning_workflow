@@ -173,8 +173,10 @@ function lightning_workflow_modules_installed(array $modules) {
     $module_installer = \Drupal::service('module_installer');
     // Lightning Workflow optionally integrates with Diff, and for testing
     // purposes we'd like to enable that integration. In order to test with
-    // meaningful responsibility-based roles, we also enable Lightning Roles.
-    $module_installer->install(['diff', 'lightning_roles']);
+    // meaningful responsibility-based roles, we also enable Lightning Roles. We
+    // also need a content type to use in testing so we enable Lightning Page.
+    $module_installer->install(['diff', 'lightning_roles', 'lightning_page', 'quickedit', 'views']);
+
     // BigPipe breaks a couple of non-JS tests which expect to find local task
     // links, but receive BigPipe placeholders instead. This is a bit of a
     // sledgehammer approach, but until it's possible to disable a module during
@@ -187,10 +189,36 @@ function lightning_workflow_modules_installed(array $modules) {
     $node_type->setThirdPartySetting('lightning_workflow', 'workflow', 'editorial');
     lightning_workflow_node_type_insert($node_type);
 
+    // Add an article content type for testing, since this module is not
+    // compatible with Standard as of Drupal 8.6.0.
+    $node_type = entity_load('node_type', 'article');
+    if (empty($node_type)) {
+      entity_create('node_type', [
+        'type' => 'article',
+        'name' => 'Article',
+      ])->save();
+    }
+
     // Allow the content view to filter by moderation state.
     $view = entity_load('view', 'content')->enforceIsNew();
     lightning_workflow_view_presave($view);
     $view->enforceIsNew(FALSE)->save();
+
+    // Ensure that the main content block exists.
+    $values = [
+      'theme' => Drupal::theme()->getActiveTheme()->getName(),
+      'plugin' => 'system_main_block',
+    ];
+
+    $main_content_block = Drupal::entityTypeManager()
+      ->getStorage('block')
+      ->loadByProperties($values);
+
+    if (empty($main_content_block)) {
+      $values['id'] = $values['theme'] . '_content';
+      $values['region'] = 'content';
+      entity_create('block', $values)->save();
+    }
   }
 }
 

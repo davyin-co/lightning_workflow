@@ -30,6 +30,11 @@ class ScheduledTransitionTest extends BrowserTestBase {
   protected function setUp() {
     parent::setUp();
 
+    // The editorial workflow is packaged with Lightning Workflow, so install
+    // its config but don't actually enable it since it is not a dependency.
+    $this->container->get('config.installer')
+      ->installDefaultConfig('module', 'lightning_workflow');
+
     $this->drupalCreateContentType(['type' => 'page']);
 
     // Due to a known core bug, rebuilding the node access table will break the

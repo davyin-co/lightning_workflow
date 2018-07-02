@@ -51,8 +51,8 @@ install:
   # Build the code base. There is no lock file in the repo, so dependencies will
   # always be renegotiated.
   - composer install
-  # Install on top of standard for testing.
-  - lightning install --from-config "mysql\://lightning:lightning@127.0.0.1/lightning" standard "http://127.0.0.1:8080"
+  # Install on top of minimal for testing.
+  - lightning install --from-config "mysql\://lightning:lightning@127.0.0.1/lightning" minimal "http://127.0.0.1:8080"
   # Restore database fixture from the version we're testing and run database and
   # and Lightning config updates.
   - lightning update $VERSION
