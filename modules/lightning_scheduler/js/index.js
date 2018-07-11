@@ -20,8 +20,6 @@ if (target)
             dataElement.name,
         step:
             target.getAttribute('step') || 60,
-        since:
-            target.getAttribute('since'),
     });
     render(element, target);
 }

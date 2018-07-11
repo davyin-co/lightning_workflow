@@ -13,7 +13,6 @@ export default class extends Component
      * @param {object} props.states
      * @param {string} props.input
      * @param {bool} props.step
-     * @param {string} props.since
      */
     constructor (props)
     {
@@ -31,9 +30,6 @@ export default class extends Component
                 return t;
             }),
         };
-
-        // Set the date and time of the most recent cron run.
-        this.since = props.since ? new Date( props.since ) : 0;
 
         // When creating a new transition, default to the first available
         // moderation state.
@@ -83,11 +79,6 @@ export default class extends Component
         });
 
         const class_list = ['scheduled-transition'];
-
-        if (transition.when < this.since)
-        {
-            class_list.push('past');
-        }
 
         // TODO: It'd be nice to find a way to make this entire layout translatable.
         return (
