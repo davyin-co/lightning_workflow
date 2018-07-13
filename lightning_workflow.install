@@ -11,15 +11,19 @@ use Drupal\node\Entity\NodeType;
  * Implements hook_requirements.
  */
 function lightning_workflow_requirements($phase) {
+  $requirements = [];
+
   if ($phase == 'install') {
-    if ((drupal_installation_attempted() && drupal_get_profile() === 'standard') || ! Drupal::config('workflows.workflow.editorial')->isNew()) {
-      $requirements['lightning_workflow'] = [
+    if (drupal_get_profile() === 'standard' || ! Drupal::config('workflows.workflow.editorial')->isNew()) {
+      $requirements['editorial_workflow_exists'] = [
         'title' => t('Lightning Workflow'),
-        'value' => t('Lightning Workflow cannot be installed because the editorial workflow is already defined.'),
+        'description' => t('Lightning Workflow cannot be installed because the editorial workflow is already defined.'),
         'severity' => REQUIREMENT_ERROR,
       ];
     }
   }
+
+  return $requirements;
 }
 
 /**
