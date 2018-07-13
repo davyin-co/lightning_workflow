@@ -100,9 +100,9 @@ Feature: Workflow moderation states
     And I wait 2 seconds
     Then I should see a "system_main_block" block with Quick Edit
 
-  @35d54919
+  @35d54919 @with-module:test_unmoderated_content_type
   Scenario: Unmoderated content types are visible in the Content view
-    Given article content:
+    Given unmoderated content:
       | title       |
       | Lazy Lummox |
     And I am logged in as a user with the administrator role
@@ -111,48 +111,43 @@ Feature: Workflow moderation states
     And I apply the exposed filters
     Then I should see "Lazy Lummox"
 
-  @084ca18d
+  @084ca18d @with-module:test_unmoderated_content_type
   Scenario: Content types do not display the Published checkbox once they are moderated
     Given I am logged in as a user with the administrator role
     When I visit "/admin/config/workflow/workflows/manage/editorial/type/node"
-    And I check the box "bundles[article]"
+    And I check the box "bundles[unmoderated]"
     And I press "Save"
-    And I visit "/node/add/article"
+    And I visit "/node/add/unmoderated"
     Then I should see the "Save" button
     But I should not see a "status[value]" field
     And I should not see the "Save and publish" button
     And I should not see the "Save as unpublished" button
     # Clean up.
     And I visit "/admin/config/workflow/workflows/manage/editorial/type/node"
-    And I uncheck the box "bundles[article]"
+    And I uncheck the box "bundles[unmoderated]"
     And I press "Save"
 
-  @d0f9aaa8
+  @d0f9aaa8 @with-module:test_unmoderated_content_type
   Scenario: Unmoderated content types have normal submit buttons
-    And I am logged in as a user with the "administer nodes, create article content" permissions
-    When I visit "/node/add/article"
+    And I am logged in as a user with the "administer nodes, create unmoderated content" permissions
+    When I visit "/node/add/unmoderated"
     Then I should see the "Save" button
     And the "Published" checkbox should be checked
     And I should not see the "Save and publish" button
     And I should not see the "Save as unpublished" button
 
   @14ddcc9d
-  Scenario Outline: Moderated content types do not show the Published checkbox
-    Given I am logged in as a user with the "create <node_type> content" permission
-    When I visit "/node/add/<node_type>"
+  Scenario: Moderated content types do not show the Published checkbox
+    Given I am logged in as a user with the "create page content" permission
+    When I visit "/node/add/page"
     Then I should see the "Save" button
     But I should not see a "status[value]" field
     And I should not see the "Save and publish" button
     And I should not see the "Save as unpublished" button
 
-    Examples:
-      | node_type |
-      | page      |
-      | article   |
-
-  @7cef449b
+  @7cef449b @with-module:test_unmoderated_content_type
   Scenario: Unmoderated content types have the "Create new revision" Checkbox
-    Given article content:
+    Given unmoderated content:
       | title      | path        |
       | Deft Zebra | /deft-zebra |
     And I am logged in as a user with the administrator role

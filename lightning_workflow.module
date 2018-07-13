@@ -189,16 +189,6 @@ function lightning_workflow_modules_installed(array $modules) {
     $node_type->setThirdPartySetting('lightning_workflow', 'workflow', 'editorial');
     lightning_workflow_node_type_insert($node_type);
 
-    // Add an article content type for testing, since this module is not
-    // compatible with Standard as of Drupal 8.6.0.
-    $node_type = entity_load('node_type', 'article');
-    if (empty($node_type)) {
-      entity_create('node_type', [
-        'type' => 'article',
-        'name' => 'Article',
-      ])->save();
-    }
-
     // Allow the content view to filter by moderation state.
     $view = entity_load('view', 'content')->enforceIsNew();
     lightning_workflow_view_presave($view);
