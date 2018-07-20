@@ -1,4 +1,5 @@
 ## 3.0.0
+* Updated Drupal core to 8.6.0.
 * The Editorial workflow has been added to this module as it is no longer
   provided by Content Moderation. (CR #2958726)
 * Fixed a bug where Lightning Scheduler would keep publishing content.
