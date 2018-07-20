@@ -1,3 +1,7 @@
+## 2.1.0
+* Fixed a bug where Lightning Scheduler would keep publishing content.
+  (Issue #2981817)
+
 ## 2.0.0
 * Scheduler UI is now compatible with Internet Explorer.
 * Remove duplicate step definitions.
