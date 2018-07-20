@@ -1,3 +1,10 @@
+## 3.0.0
+* The Editorial workflow has been added to this module as it is no longer
+  provided by Content Moderation. (CR #2958726)
+* Fixed a bug where Lightning Scheduler would keep publishing content.
+  (Issue #2981817)
+* Added a return value to hook_requirements implementation. (Issue #2984734)
+
 ## 2.0.0
 * Scheduler UI is now compatible with Internet Explorer.
 * Remove duplicate step definitions.
