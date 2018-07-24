@@ -183,14 +183,10 @@ export default class extends Component
             // we need to bind it here.
             const element = event.target;
 
-            // Only change the time in state if it's valid.
-            if (element.checkValidity())
-            {
-                this.setState(prev => {
-                    prev.edit.when.setHours(...element.value.split(':'));
-                    return prev;
-                });
-            }
+            this.setState(prev => {
+                prev.edit.when.setHours(...element.value.split(':'));
+                return prev;
+            });
         };
 
         const value = dateFormat(this.state.edit.when, 'isoTime');
