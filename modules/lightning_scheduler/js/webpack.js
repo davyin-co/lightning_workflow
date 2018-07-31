@@ -19,6 +19,8 @@ module.exports = {
         'react-dom': 'ReactDOM'
     },
 
+    devtool: 'source-map',
+
     module: {
         loaders: [
             {
