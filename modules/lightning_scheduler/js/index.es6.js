@@ -1,7 +1,7 @@
 import { createElement } from 'react';
 import { render } from 'react-dom';
 
-import TransitionSet from './TransitionSet';
+import TransitionSet from './TransitionSet.es6';
 
 const target = document.querySelector('TransitionSet');
 
