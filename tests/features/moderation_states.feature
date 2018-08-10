@@ -6,47 +6,50 @@ Feature: Workflow moderation states
   @c9391f57
   Scenario: Anonymous users should not be able to access content in an unpublished, non-draft state.
     Given page content:
-      | title             | path   | moderation_state |
-      | Moderation Test 1 | /mod-1 | review           |
-    When I go to "/mod-1"
-    Then the response status code should be 403
+      | title             | promote | moderation_state |
+      | Moderation Test 1 | 1       | review           |
+    When I go to "/"
+    Then I should not see the link "Moderation Test 1"
 
   @b3ca1fae
   Scenario: Users with permission to transition content between moderation states should be able to see content in an unpublished, non-draft state.
-    Given I am logged in as a user with the "view any unpublished content" permission
+    Given I am logged in as a user with the "access content overview, view any unpublished content" permissions
     And page content:
-      | title             | path   | moderation_state |
-      | Moderation Test 2 | /mod-2 | review           |
-    When I visit "/mod-2"
+      | title             | moderation_state |
+      | Moderation Test 2 | review           |
+    When I visit "/admin/content"
+    And I click "Moderation Test 2"
     Then the response status code should be 200
 
   @03ebc3ee
   Scenario: Publishing an entity by transitioning it to a published state
-    Given I am logged in as a user with the "view any unpublished content, use editorial transition review, use editorial transition publish, create page content, edit any page content, create url aliases" permissions
+    Given I am logged in as a user with the "access content overview, view any unpublished content, use editorial transition review, use editorial transition publish, create page content, edit any page content, create url aliases" permissions
     And page content:
-      | title             | path   | moderation_state |
-      | Moderation Test 3 | /mod-3 | review           |
-    When I visit "/mod-3"
+      | title             | promote | moderation_state |
+      | Moderation Test 3 | 1       | review           |
+    When I visit "/admin/content"
+    And I click "Moderation Test 3"
     And I visit the edit form
     And I select "Published" from "moderation_state[0][state]"
     And I press "Save"
     And I visit "/user/logout"
-    And I visit "/mod-3"
-    Then the response status code should be 200
+    And I visit "/node"
+    Then I should see the link "Moderation Test 3"
 
   @c0c17d43
   Scenario: Transitioning published content to an unpublished state
-    Given I am logged in as a user with the "use editorial transition publish, use editorial transition archive, create page content, edit any page content, create url aliases" permissions
+    Given I am logged in as a user with the "access content overview, use editorial transition publish, use editorial transition archive, create page content, edit any page content, create url aliases" permissions
     And page content:
-      | title             | path   | moderation_state |
-      | Moderation Test 4 | /mod-4 | published        |
-    And I visit "/mod-4"
+      | title             | promote | moderation_state |
+      | Moderation Test 4 | 1       | published        |
+    And I visit "/admin/content"
+    And I click "Moderation Test 4"
     And I visit the edit form
     And I select "Archived" from "moderation_state[0][state]"
     And I press "Save"
     And I visit "/user/logout"
-    And I go to "/mod-4"
-    Then the response status code should be 403
+    And I go to "/node"
+    Then I should not see the link "Moderation Test 4"
 
   @cead87f0
   Scenario: Filtering content by moderation state
@@ -73,9 +76,10 @@ Feature: Workflow moderation states
   Scenario: Examining the moderation history of a piece of content
     Given I am logged in as a user with the administrator role
     And page content:
-      | title           | moderation_state | path     |
-      | Samuel L. Ipsum | draft            | /slipsum |
-    When I visit "/slipsum"
+      | title           | moderation_state |
+      | Samuel L. Ipsum | draft            |
+    When I visit "/admin/content"
+    And I click "Samuel L. Ipsum"
     And I visit the edit form
     And I select "In review" from "moderation_state[0][state]"
     And I press "Save"
@@ -109,7 +113,7 @@ Feature: Workflow moderation states
     When I visit "admin/content"
     And I select "- Any -" from "moderation_state"
     And I apply the exposed filters
-    Then I should see "Lazy Lummox"
+    Then I should see the link "Lazy Lummox"
 
   @084ca18d
   Scenario: Content types do not display the Published checkbox once they are moderated
@@ -152,13 +156,14 @@ Feature: Workflow moderation states
 
   @7cef449b
   Scenario: Unmoderated content types have the "Create new revision" Checkbox
-    Given article content:
-      | title      | path        |
-      | Deft Zebra | /deft-zebra |
-    And I am logged in as a user with the administrator role
-    When I visit "/deft-zebra"
+    Given I am logged in as a user with the administrator role
+    And article content:
+      | title      |
+      | Deft Zebra |
+    When I visit "/admin/content"
+    And I click "Deft Zebra"
     And I visit the edit form
-    Then I should see "Create new revision"
+    Then I should see a "Create new revision" field
 
   @d364fb3a
   Scenario: Removing access to workflow actions that do not make sense with moderated content

@@ -70,6 +70,9 @@ Feature: Scheduling transitions on content
   @4e8a6957
   Scenario: Automatically publishing when there is a pending revision
     When I select "Published" from "moderation_state[0][state]"
+    # Open the publishing options.
+    And I click the "#edit-options > summary" element
+    And I check the box "Promoted to front page"
     And I press "Save"
     And I visit the edit form
     And I enter "MC Hammer" for "Title"
@@ -78,5 +81,5 @@ Feature: Scheduling transitions on content
     And I press "Save"
     And I wait 15 seconds
     And I run cron over HTTP
-    And I click "View"
-    Then I should see "MC Hammer"
+    And I visit "/node"
+    Then I should see the link "MC Hammer"
