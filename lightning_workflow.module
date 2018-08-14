@@ -200,20 +200,6 @@ function lightning_workflow_modules_installed(array $modules) {
       'name' => 'Article',
     ])->save();
 
-    // Place the main content block in the theme.
-    $theme = Drupal::theme()->getActiveTheme()->getName();
-    entity_create('block', [
-      'id' => $theme . '_content',
-      'theme' => $theme,
-      'region' => 'content',
-      'plugin' => 'system_main_block',
-      'settings' => [
-        'id' => 'system_main_block',
-        'label' => 'Main page content',
-        'label_display' => '0',
-      ],
-    ])->save();
-
     // Add moderation to the page content type.
     /** @var NodeTypeInterface $node_type */
     $node_type = entity_load('node_type', 'page');
