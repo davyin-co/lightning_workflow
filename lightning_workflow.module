@@ -162,6 +162,7 @@ function lightning_workflow_modules_installed(array $modules) {
         'use editorial transition review',
         'view any unpublished content',
         'view latest version',
+        'use moderation sidebar',
       ])
       ->grantPermissions('reviewer', [
         'use editorial transition publish',
@@ -169,6 +170,8 @@ function lightning_workflow_modules_installed(array $modules) {
         'use editorial transition archive',
         'view any unpublished content',
         'view latest version',
+        'access toolbar',
+        'use moderation sidebar',
       ]);
   }
 
@@ -184,8 +187,10 @@ function lightning_workflow_modules_installed(array $modules) {
     $module_installer->install([
       'diff',
       'lightning_roles',
+      'moderation_sidebar',
       'pathauto',
       'quickedit',
+      'toolbar',
       'views',
     ]);
     // BigPipe breaks a couple of non-JS tests which expect to find local task

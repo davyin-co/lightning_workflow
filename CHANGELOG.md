@@ -1,3 +1,6 @@
+## 2.3.0
+* Moderation Sidebar is now included with Lightning Workflow. (#62)
+
 ## 2.2.0
 * Fixed a bug where Lightning Scheduler would not correctly handle "AM/PM" in
   its input fields. (Issue #2981807)
