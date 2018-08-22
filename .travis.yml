@@ -62,6 +62,7 @@ before_script:
   - drush runserver --default-server=builtin 8080 &>/dev/null &
   - google-chrome-stable --headless --disable-gpu  --no-sandbox --remote-debugging-port=9222 http://localhost &
   - drush pm-enable lightning_roles --yes
+  - export DTT_BASE_URL=http://127.0.0.1:8080
 
 script:
   - composer validate composer.json --no-check-all --ansi --no-interaction

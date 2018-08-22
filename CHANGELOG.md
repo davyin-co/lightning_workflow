@@ -5,6 +5,11 @@
 * Fixed a bug where Lightning Scheduler would keep publishing content.
   (Issue #2981817)
 * Added a return value to hook_requirements implementation. (Issue #2984734)
+
+## 2.3.0
+* Moderation Sidebar is now included with Lightning Workflow. (#62)
+
+## 2.2.0
 * Fixed a bug where Lightning Scheduler would not correctly handle "AM/PM" in
   its input fields. (Issue #2981807)
 * Fixed a fatal error caused by old code that was not removed during the shift
