@@ -8,6 +8,9 @@
 
 ## 2.3.0
 * Moderation Sidebar is now included with Lightning Workflow. (#62)
+* The editorial workflow transitions have changed. "Review" is now "Send to
+  review", "Restore" is now "Restore from archive", and the "Restore to Draft"
+  transition has been merged into the "Create new draft" transition. (#64)
 
 ## 2.2.0
 * Fixed a bug where Lightning Scheduler would not correctly handle "AM/PM" in
