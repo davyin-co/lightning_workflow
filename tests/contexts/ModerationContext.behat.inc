@@ -115,7 +115,14 @@ final class ModerationContext extends DrupalSubContextBase {
     $assert = $this->assertSession();
     $toolbar = $assert->elementExists('css', '#toolbar-bar');
     $toolbar->clickLink('Tasks');
-    $this->awaitElement('.moderation-sidebar-container')->pressButton($transition->label());
+    $sidebar = $this->awaitElement('.moderation-sidebar-container');
+
+    // Assert that the review transition has the correct label.
+    // @see \Drupal\lightning_workflow\Update\Update230
+    // @see lightning_workflow_install()
+    $assert->elementExists('named', ['button', 'Send to review'], $sidebar);
+
+    $sidebar->pressButton($transition->label());
 
     $assert->pageTextContains('The moderation state has been updated.');
     $current_state = $assert->elementExists('named', ['link', 'Tasks'], $toolbar)->getAttribute('data-label');
