@@ -59,7 +59,6 @@ class ScheduledTransitionTest extends BrowserTestBase {
       'use editorial transition create_new_draft',
       'use editorial transition publish',
       'use editorial transition archive',
-      'use editorial transition archived_draft',
       'schedule editorial transition publish',
       'schedule editorial transition archive',
     ]);
