@@ -199,12 +199,6 @@ function lightning_workflow_modules_installed(array $modules) {
     // a single test, it's the best we can do.
     $module_installer->uninstall(['big_pipe']);
 
-    // Create an unmoderated Article content type for testing.
-    entity_create('node_type', [
-      'type' => 'article',
-      'name' => 'Article',
-    ])->save();
-
     // Add moderation to the page content type.
     /** @var NodeTypeInterface $node_type */
     $node_type = entity_load('node_type', 'page');

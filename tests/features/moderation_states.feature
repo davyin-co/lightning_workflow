@@ -3,6 +3,11 @@ Feature: Workflow moderation states
   As a site administator, I need to be able to manage moderation states for
   content.
 
+  Background:
+    Given node_type entities:
+      | type        | name        |
+      | unmoderated | Unmoderated |
+
   @c9391f57
   Scenario: Anonymous users should not be able to access content in an unpublished, non-draft state.
     Given page content:
@@ -104,7 +109,7 @@ Feature: Workflow moderation states
     And I wait 2 seconds
     Then I should see a "system_main_block" block with Quick Edit
 
-  @35d54919 @with-module:test_unmoderated_content_type
+  @35d54919
   Scenario: Unmoderated content types are visible in the Content view
     Given unmoderated content:
       | title       |
@@ -115,25 +120,19 @@ Feature: Workflow moderation states
     And I apply the exposed filters
     Then I should see the link "Lazy Lummox"
 
-  @084ca18d @with-module:test_unmoderated_content_type
+  @084ca18d
   Scenario: Content types do not display the Published checkbox once they are moderated
     Given I am logged in as a user with the administrator role
-    When I visit "/admin/config/workflow/workflows/manage/editorial/type/node"
-    And I check the box "bundles[unmoderated]"
-    And I press "Save"
+    When I enable moderation for the unmoderated content type
     And I visit "/node/add/unmoderated"
     Then I should see the "Save" button
     But I should not see a "status[value]" field
     And I should not see the "Save and publish" button
     And I should not see the "Save as unpublished" button
-    # Clean up.
-    And I visit "/admin/config/workflow/workflows/manage/editorial/type/node"
-    And I uncheck the box "bundles[unmoderated]"
-    And I press "Save"
 
-  @d0f9aaa8 @with-module:test_unmoderated_content_type
+  @d0f9aaa8
   Scenario: Unmoderated content types have normal submit buttons
-    And I am logged in as a user with the "administer nodes, create unmoderated content" permissions
+    Given I am logged in as a user with the "administer nodes, create unmoderated content" permissions
     When I visit "/node/add/unmoderated"
     Then I should see the "Save" button
     And the "Published" checkbox should be checked
@@ -149,7 +148,7 @@ Feature: Workflow moderation states
     And I should not see the "Save and publish" button
     And I should not see the "Save as unpublished" button
 
-  @7cef449b @with-module:test_unmoderated_content_type
+  @7cef449b
   Scenario: Unmoderated content types have the "Create new revision" Checkbox
     Given I am logged in as a user with the administrator role
     And unmoderated content:
