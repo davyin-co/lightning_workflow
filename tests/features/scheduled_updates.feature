@@ -3,7 +3,10 @@ Feature: Scheduled updates to content
 
   @0e5b60fd
   Scenario: Scheduling a moderation state change on an unmoderated content type
-    And article content:
+    Given node_type entities:
+      | type        | name        |
+      | pastafazoul | Pastafazoul |
+    And pastafazoul content:
       | title     | path       |
       | Jucketron | /jucketron |
     And I am logged in as a user with the administrator role

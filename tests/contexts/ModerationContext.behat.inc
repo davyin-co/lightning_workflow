@@ -22,6 +22,13 @@ final class ModerationContext extends DrupalSubContextBase {
   private $node;
 
   /**
+   * Content types which had moderation enabled during the scenario.
+   *
+   * @var string[]
+   */
+  private $moderated = [];
+
+  /**
    * Cleans up after the scenario.
    *
    * @AfterScenario
@@ -30,6 +37,15 @@ final class ModerationContext extends DrupalSubContextBase {
     if ($this->node) {
       $this->node->delete();
     }
+
+    /** @var \Drupal\workflows\WorkflowInterface $workflow */
+    $workflow = entity_load('workflow', 'editorial');
+    Assert::isInstanceOf($workflow, '\Drupal\workflows\WorkflowInterface');
+
+    while ($this->moderated) {
+      $workflow->getTypePlugin()->removeEntityTypeAndBundle('node', array_pop($this->moderated));
+    }
+    $workflow->save();
   }
 
   /**
@@ -128,6 +144,23 @@ final class ModerationContext extends DrupalSubContextBase {
     $current_state = $assert->elementExists('named', ['link', 'Tasks'], $toolbar)->getAttribute('data-label');
 
     Assert::same($current_state, $transition->to()->label());
+  }
+
+  /**
+   * Enables moderation for a content type.
+   *
+   * @param string $node_type
+   *   The machine name of the content type.
+   *
+   * @When I enable moderation for the :node_type content type
+   */
+  public function addModerationToContentType($node_type) {
+    /** @var \Drupal\node\NodeTypeInterface $node_type */
+    $node_type = entity_load('node_type', $node_type);
+    $node_type->setThirdPartySetting('lightning_workflow', 'workflow', 'editorial');
+    lightning_workflow_node_type_insert($node_type);
+
+    array_push($this->moderated, $node_type->id());
   }
 
 }
