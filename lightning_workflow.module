@@ -42,15 +42,11 @@ function lightning_workflow_node_type_insert(NodeTypeInterface $node_type) {
 
   $plugin = $workflow->getTypePlugin();
   if ($plugin instanceof ContentModerationInterface) {
-    $rebuild = ! in_array('node', $plugin->getEntityTypes(), TRUE);
-    $plugin->addEntityTypeAndBundle('node', $node_type->id());
-    $workflow->save();
-
     // We need to rebuild all routes because Content Moderation needs to ensure
     // that edit forms load the latest revision.
-    if ($rebuild) {
-      Drupal::service('router.builder')->rebuild();
-    }
+    $plugin->addEntityTypeAndBundle('node', $node_type->id());
+    $workflow->save();
+    Drupal::service('router.builder')->rebuild();
   }
 }
 

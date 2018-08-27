@@ -120,34 +120,6 @@ Feature: Workflow moderation states
     And I apply the exposed filters
     Then I should see the link "Lazy Lummox"
 
-  @084ca18d
-  Scenario: Content types do not display the Published checkbox once they are moderated
-    Given I am logged in as a user with the administrator role
-    When I enable moderation for the unmoderated content type
-    And I visit "/node/add/unmoderated"
-    Then I should see the "Save" button
-    But I should not see a "status[value]" field
-    And I should not see the "Save and publish" button
-    And I should not see the "Save as unpublished" button
-
-  @d0f9aaa8
-  Scenario: Unmoderated content types have normal submit buttons
-    Given I am logged in as a user with the "administer nodes, create unmoderated content" permissions
-    When I visit "/node/add/unmoderated"
-    Then I should see the "Save" button
-    And the "Published" checkbox should be checked
-    And I should not see the "Save and publish" button
-    And I should not see the "Save as unpublished" button
-
-  @14ddcc9d
-  Scenario: Moderated content types do not show the Published checkbox
-    Given I am logged in as a user with the "create page content" permission
-    When I visit "/node/add/page"
-    Then I should see the "Save" button
-    But I should not see a "status[value]" field
-    And I should not see the "Save and publish" button
-    And I should not see the "Save as unpublished" button
-
   @7cef449b
   Scenario: Unmoderated content types have the "Create new revision" Checkbox
     Given I am logged in as a user with the administrator role
