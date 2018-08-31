@@ -1,3 +1,7 @@
+## 2.4.0
+* Fixed an incompatibility between Lightning Scheduler and Inline Entity Form
+  (Issue #2993137)
+
 ## 2.3.0
 * Moderation Sidebar is now included with Lightning Workflow. (#62)
 * The editorial workflow transitions have changed. "Review" is now "Send to
