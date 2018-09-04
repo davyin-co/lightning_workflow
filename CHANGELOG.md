@@ -1,10 +1,14 @@
 ## 3.0.0
-* Updated Drupal core to 8.6.0.
+* Updated Lightning Core to 3.0, which requires Drupal core 8.6.0.
 * The Editorial workflow has been added to this module as it is no longer
   provided by Content Moderation. (CR #2958726)
 * Fixed a bug where Lightning Scheduler would keep publishing content.
   (Issue #2981817)
 * Added a return value to hook_requirements implementation. (Issue #2984734)
+
+## 2.4.0
+* Fixed an incompatibility between Lightning Scheduler and Inline Entity Form
+  (Issue #2993137)
 
 ## 2.3.0
 * Moderation Sidebar is now included with Lightning Workflow. (#62)
