@@ -281,3 +281,19 @@ function lightning_workflow_views_pre_render(ViewExecutable $view) {
     }
   }
 }
+
+/**
+ * Implements hook_entity_extra_field_info_alter().
+ */
+function lightning_workflow_entity_extra_field_info_alter(array &$info) {
+  $moderation_sidebar_exists = Drupal::moduleHandler()->moduleExists('moderation_sidebar');
+
+  foreach ($info as &$entity_type) {
+    foreach ($entity_type as &$bundle) {
+      if (isset($bundle['display']['content_moderation_control'])) {
+        // Make moderation control pseudo fields hidden if Moderation Sidebar is enabled.
+        $bundle['display']['content_moderation_control']['visible'] = !$moderation_sidebar_exists;
+      }
+    }
+  }
+}
