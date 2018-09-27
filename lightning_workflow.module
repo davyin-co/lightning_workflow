@@ -183,6 +183,7 @@ function lightning_workflow_modules_installed(array $modules) {
     $module_installer->install([
       'diff',
       'lightning_roles',
+      'moderation_dashboard',
       'moderation_sidebar',
       'pathauto',
       'quickedit',
