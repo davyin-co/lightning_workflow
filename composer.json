@@ -2,7 +2,7 @@
     "name": "acquia/lightning_workflow",
     "description": "Tools to improve your content workflow.",
     "type": "drupal-module",
-    "license": "GPL-2.0+",
+    "license": "GPL-2.0-or-later",
     "minimum-stability": "dev",
     "prefer-stable": true,
     "repositories": {
