@@ -25,7 +25,7 @@ Feature: Integration of workflows with Quick Edit
   Scenario: Quick Edit should be enabled on forward revisions
     # The content roles do not have the ability to transition content from
     # Published to Draft states.
-    Given I am logged in as a user with the administrator role
+    Given I am logged in as an administrator
     When I visit "/foobar"
     And I visit the edit form
     And I select "published" from "moderation_state[0][state]"

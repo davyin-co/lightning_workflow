@@ -54,6 +54,11 @@
         "pull": "Acquia\\Lightning\\Commands\\FileCommands::pull",
         "push": "Acquia\\Lightning\\Commands\\FileCommands::push"
     },
+    "autoload": {
+        "psr-4": {
+            "Drupal\\Tests\\lightning_workflow\\": "tests/src"
+        }
+    },
     "extra": {
         "installer-types": [
             "bower-asset",
@@ -67,6 +72,10 @@
                 "type:drupal-library",
                 "type:bower-asset",
                 "type:npm-asset"
+            ],
+            "docroot/modules/contrib/acquia/{$name}": [
+                "drupal/lightning_core",
+                "drupal/lightning_workflow"
             ],
             "docroot/modules/contrib/{$name}": [
                 "type:drupal-module"

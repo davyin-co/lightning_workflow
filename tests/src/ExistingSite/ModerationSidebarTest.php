@@ -2,7 +2,6 @@
 
 namespace Drupal\Tests\lightning_workflow\ExistingSite;
 
-use Drupal\Tests\WebAssert;
 use Drupal\user\Entity\Role;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -33,15 +32,7 @@ class ModerationSidebarTest extends ExistingSiteBase {
     $user = $this->createUser();
     $user->addRole($role->id());
     $user->save();
-    $this->assertNotEmpty($user->passRaw);
-
-    $assert = new WebAssert($this->getSession());
-
-    $this->visit('/user/login');
-    $assert->statusCodeEquals(200);
-    $assert->fieldExists('Name')->setValue($user->getAccountName());
-    $assert->fieldExists('Password')->setValue($user->passRaw);
-    $assert->buttonExists('Log in')->press();
+    $this->drupalLogin($user);
 
     $node = $this->createNode([
       'title' => 'Foo Bar',
@@ -49,8 +40,8 @@ class ModerationSidebarTest extends ExistingSiteBase {
     ]);
     $path = $node->toUrl()->toString();
     $this->visit($path);
-    $assert->statusCodeEquals(200);
-    $assert->linkExists('Tasks');
+    $this->assertSession()->statusCodeEquals(200);
+    $this->assertSession()->linkExists('Tasks');
   }
 
   /**
