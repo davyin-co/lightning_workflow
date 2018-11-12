@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\lightning_workflow\ExistingSite;
 
+use Drupal\Tests\lightning_workflow\FixtureContext;
 use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
@@ -12,6 +13,13 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
 class ContentTypeModerationTest extends ExistingSiteBase {
 
   use ContentTypeCreationTrait;
+
+  /**
+   * The fixture context.
+   *
+   * @var \Drupal\Tests\lightning_workflow\FixtureContext
+   */
+  private $fixtureContext;
 
   /**
    * The content type created during the test.
@@ -25,6 +33,9 @@ class ContentTypeModerationTest extends ExistingSiteBase {
    */
   public function setUp() {
     parent::setUp();
+    $this->fixtureContext = new FixtureContext($this->container);
+    $this->fixtureContext->setUp();
+    drupal_flush_all_caches();
     $this->nodeType = $this->createContentType();
   }
 
@@ -32,8 +43,9 @@ class ContentTypeModerationTest extends ExistingSiteBase {
    * {@inheritdoc}
    */
   public function tearDown() {
-    parent::tearDown();
     $this->nodeType->delete();
+    $this->fixtureContext->tearDown();
+    parent::tearDown();
   }
 
   /**
@@ -48,7 +60,7 @@ class ContentTypeModerationTest extends ExistingSiteBase {
       'promote' => TRUE,
       'moderation_state' => 'review',
     ]);
-    $this->drupalGet('/');
+    $this->drupalGet('');
     $this->assertSession()->linkNotExists('Moderation Test 1');
 
     $account = $this->createUser([
@@ -78,7 +90,7 @@ class ContentTypeModerationTest extends ExistingSiteBase {
 
     $this->drupalGet('/admin/content');
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->elementExists(['named', 'link', 'Version 1'])->click();
+    $this->assertSession()->elementExists('named', ['link', 'Version 1'])->click();
     $this->assertSession()->statusCodeEquals(200);
     $this->assertSession()->pageTextContains('Version 1');
   }
@@ -100,7 +112,7 @@ class ContentTypeModerationTest extends ExistingSiteBase {
 
     $this->drupalGet('/admin/content');
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->elementExists(['named', 'link', 'Version 1'])->click();
+    $this->assertSession()->elementExists('named', ['link', 'Version 1'])->click();
     $this->assertSession()->elementExists('css', 'a[rel="edit-form"]')->click();
     $this->assertSession()->fieldExists('Title')->setValue('Version 2');
     $this->assertSession()->selectExists('moderation_state[0][state]')->selectOption('published');
@@ -118,9 +130,9 @@ class ContentTypeModerationTest extends ExistingSiteBase {
 
     $this->drupalGet('/admin/content');
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->elementExists(['named', 'link', 'Version 2'])->click();
+    $this->assertSession()->elementExists('named', ['link', 'Version 2'])->click();
     $this->assertSession()->statusCodeEquals(200);
-    $this->assertSession()->elementExists(['named', 'link', 'Latest version']);
+    $this->assertSession()->elementExists('named', ['link', 'Latest version']);
   }
 
   /**

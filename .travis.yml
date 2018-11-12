@@ -64,6 +64,7 @@ before_script:
 script:
   - composer validate composer.json --no-check-all --ansi --no-interaction
   - phpunit --configuration ./docroot/core --group lightning_workflow
+  - phpunit --configuration ./docroot/core tests/src/ExistingSite
   - behat --suite lightning_workflow
 
 after_failure:

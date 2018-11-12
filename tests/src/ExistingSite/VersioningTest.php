@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\lightning_workflow\ExistingSite;
 
+use Drupal\Tests\lightning_workflow\FixtureContext;
 use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
@@ -9,6 +10,31 @@ use weitzman\DrupalTestTraits\ExistingSiteBase;
  * @group lightning_workflow
  */
 class VersioningTest extends ExistingSiteBase {
+
+  /**
+   * The fixture context.
+   *
+   * @var \Drupal\Tests\lightning_workflow\FixtureContext
+   */
+  private $fixtureContext;
+
+  /**
+   * {@inheritdoc}
+   */
+  public function setUp() {
+    parent::setUp();
+    $this->fixtureContext = new FixtureContext($this->container);
+    $this->fixtureContext->setUp();
+    drupal_flush_all_caches();
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  public function tearDown() {
+    $this->fixtureContext->tearDown();
+    parent::tearDown();
+  }
 
   /**
    * Tests that the edit form loads the latest revision.
