@@ -2,7 +2,7 @@
 Feature: Scheduling transitions on content
 
   Background:
-    Given I am logged in as a user with the "create page content, view own unpublished content, edit own page content, use editorial transition create_new_draft, use editorial transition review, use editorial transition publish, use editorial transition archive, schedule editorial transition publish, schedule editorial transition archive, view latest version" permissions
+    Given I am logged in as a user with the "create page content, view own unpublished content, edit own page content, use editorial transition create_new_draft, use editorial transition review, use editorial transition publish, use editorial transition archive, schedule editorial transition publish, schedule editorial transition archive, view latest version, administer nodes" permissions
     And I visit "/node/add/page"
     And I enter "Schedule This" for "Title"
 
@@ -71,7 +71,7 @@ Feature: Scheduling transitions on content
   Scenario: Automatically publishing when there is a pending revision
     When I select "Published" from "moderation_state[0][state]"
     # Open the publishing options.
-    And I click the "#edit-options > summary" element
+    And I click the "#edit-options" element
     And I check the box "Promoted to front page"
     And I press "Save"
     And I visit the edit form

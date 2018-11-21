@@ -15,6 +15,7 @@ final class SchedulerContext extends DrupalSubContextBase {
    */
   public function setUp() {
     ini_set('date.timezone', drupal_get_user_timezone());
+    \Drupal::state()->set('lightning_scheduler.is_testing', TRUE);
   }
 
   /**
