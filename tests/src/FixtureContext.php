@@ -47,13 +47,8 @@ final class FixtureContext extends FixtureBase {
     // Lightning Workflow optionally integrates with Diff, and for testing
     // purposes we'd like to enable that integration. In order to test with
     // meaningful responsibility-based roles, we also enable Lightning Roles.
-    $this->installModule('diff');
     $this->installModule('lightning_roles');
-    $this->installModule('moderation_dashboard');
-    $this->installModule('moderation_sidebar');
     $this->installModule('pathauto');
-    $this->installModule('quickedit');
-    $this->installModule('toolbar');
     $this->installModule('views');
 
     $this->disableBigPipe = $this->container->get('module_handler')

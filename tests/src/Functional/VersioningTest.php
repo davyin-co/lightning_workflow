@@ -1,45 +1,30 @@
 <?php
 
-namespace Drupal\Tests\lightning_workflow\ExistingSite;
+namespace Drupal\Tests\lightning_workflow\Functional;
 
-use Drupal\Tests\lightning_workflow\FixtureContext;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
+use Drupal\Tests\BrowserTestBase;
 
 /**
  * @group lightning
  * @group lightning_workflow
  */
-class VersioningTest extends ExistingSiteBase {
-
-  /**
-   * The fixture context.
-   *
-   * @var \Drupal\Tests\lightning_workflow\FixtureContext
-   */
-  private $fixtureContext;
+class VersioningTest extends BrowserTestBase {
 
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
-    parent::setUp();
-    $this->fixtureContext = new FixtureContext($this->container);
-    $this->fixtureContext->setUp();
-    drupal_flush_all_caches();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function tearDown() {
-    $this->fixtureContext->tearDown();
-    parent::tearDown();
-  }
+  protected static $modules = [
+    'block',
+    'lightning_page',
+    'lightning_workflow',
+  ];
 
   /**
    * Tests that the edit form loads the latest revision.
    */
   public function testLatestRevisionIsLoadedByEditForm() {
+    $this->drupalPlaceBlock('local_tasks_block');
+
     $account = $this->createUser([
       'create page content',
       'edit own page content',
