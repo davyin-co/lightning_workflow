@@ -57,7 +57,9 @@ class TransitionTest extends WebDriverTestBase {
     // to catch time zone-related edge cases and bugs. However, the scheduler UI
     // is very sensitive to time zones, so it's best to set it, for the purposes
     // of this test, to the time zone configured in php.ini.
-    date_default_timezone_set(ini_get('date.timezone'));
+    $this->config('system.date')
+      ->set('timezone.default', ini_get('date.timezone'))
+      ->save();
 
     $this->today = date('mdY');
   }
