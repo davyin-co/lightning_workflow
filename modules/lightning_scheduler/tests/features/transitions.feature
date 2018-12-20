@@ -9,7 +9,7 @@ Feature: Scheduling transitions on content
     And I schedule a transition to Published in 10 seconds
     And I schedule a transition to Archived in 20 seconds
     And I press "Save"
-    And I wait 15 seconds
+    And I wait 12 seconds
     And I run cron over HTTP
     And I wait 10 seconds
     And I run cron over HTTP

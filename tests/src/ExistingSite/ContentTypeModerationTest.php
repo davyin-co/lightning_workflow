@@ -31,6 +31,15 @@ class ContentTypeModerationTest extends ExistingSiteBase {
   /**
    * {@inheritdoc}
    */
+  protected function prepareRequest() {
+    // The base implementation of this method will set a special cookie
+    // identifying the Mink session as a test user agent. For this kind of test,
+    // though, we don't need that.
+  }
+
+  /**
+   * {@inheritdoc}
+   */
   public function setUp() {
     parent::setUp();
     $this->fixtureContext = new FixtureContext($this->container);
