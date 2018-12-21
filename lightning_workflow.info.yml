@@ -4,7 +4,7 @@ type: module
 description: 'Tools to improve your content workflow.'
 package: Lightning
 dependencies:
-  - content_moderation
-  - lightning_core
+  - drupal:content_moderation
+  - lightning_core:lightning_core
 components:
   - lightning_scheduler
