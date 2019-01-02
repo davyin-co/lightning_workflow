@@ -33,7 +33,7 @@
         "drupal/lightning_core": "3.x-dev",
         "drupal/diff": "^1.0",
         "drupal/moderation_sidebar": "^1.0",
-        "drupal/moderation_dashboard": "1.0.0-alpha1"
+        "drupal/moderation_dashboard": "^1.0"
     },
     "config": {
         "preferred-install": {
@@ -86,12 +86,6 @@
             "docroot/themes/contrib/{$name}": [
                 "type:drupal-theme"
             ]
-        },
-        "patches": {
-            "drupal/moderation_dashboard": {
-                "3002916 - Make redirection on login configurable":
-                "https://www.drupal.org/files/issues/2018-09-27/3002916-5.patch"
-            }
         },
         "enable-patching": true
     }
