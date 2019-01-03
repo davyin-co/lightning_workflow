@@ -1,5 +1,5 @@
 {
-    "name": "acquia/lightning_workflow",
+    "name": "drupal/lightning_workflow",
     "type": "drupal-module",
     "description": "Tools to improve your content workflow.",
     "license": "GPL-2.0-or-later",
