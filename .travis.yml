@@ -21,12 +21,17 @@ addons:
   chrome: stable
 
 before_install:
+  # Tweak PHP configuration.
+  - phpenv config-add ./tests/travis.php.ini
+  - phpenv rehash
+
   - composer self-update
   - composer --version
   - google-chrome-stable --version
 
   - ORCA=$TRAVIS_BUILD_DIR/../orca
   - ORCA_FIXTURE=$ORCA-build
+  - ORCA_SUT=drupal/lightning_workflow
 
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - export PATH="$ORCA/bin:$PATH"
@@ -38,15 +43,8 @@ install:
   - git clone --depth 1 git@github.com:acquia/orca.git ../orca
   - $ORCA/bin/travis/install
 
-  # Tweak PHP configuration.
-  - echo 'max_execution_time = 120' >> drupal.php.ini;
-  - echo 'sendmail_path = /bin/true' >> drupal.php.ini;
-  - phpenv config-add drupal.php.ini
-  - phpenv rehash
-
   # Use ORCA to build the code base.
-  - cd ../orca
-  - orca fixture:init --force --sut-only --sut drupal/lightning_workflow
+  - orca fixture:init --force --sut-only --sut $ORCA_SUT
   - # Install dev dependencies.
   - composer require --dev drupal/inline_entity_form --working-dir $ORCA_FIXTURE
 
@@ -57,7 +55,7 @@ before_script:
   - chromedriver --port=4444 &
 
 script:
-  - orca tests:run --no-servers --sut-only --sut drupal/lightning_workflow
+  - orca tests:run --no-servers --sut-only --sut $ORCA_SUT
 
 after_failure:
   - cd docroot
