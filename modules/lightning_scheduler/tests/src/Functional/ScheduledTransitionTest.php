@@ -8,7 +8,6 @@ use Drupal\Tests\Traits\Core\CronRunTrait;
 use Drupal\workflows\Entity\Workflow;
 
 /**
- * @group lightning
  * @group lightning_workflow
  * @group lightning_scheduler
  */
