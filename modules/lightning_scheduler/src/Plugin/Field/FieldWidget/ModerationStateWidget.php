@@ -6,13 +6,12 @@ use Drupal\Component\Serialization\Json;
 use Drupal\content_moderation\ModerationInformation;
 use Drupal\content_moderation\Plugin\Field\FieldWidget\ModerationStateWidget as BaseModerationStateWidget;
 use Drupal\content_moderation\StateTransitionValidationInterface;
+use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Field\FieldDefinitionInterface;
 use Drupal\Core\Field\FieldItemListInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
-use Drupal\Core\State\StateInterface;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 use Drupal\lightning_scheduler\TransitionManager;
 use Drupal\lightning_scheduler\TransitionSet;
@@ -31,18 +30,18 @@ class ModerationStateWidget extends BaseModerationStateWidget {
   protected $transitionManager;
 
   /**
-   * The state service.
-   *
-   * @var \Drupal\Core\State\StateInterface
-   */
-  protected $state;
-
-  /**
    * The current entity.
    *
    * @var \Drupal\Core\Entity\FieldableEntityInterface
    */
   protected $entity;
+
+  /**
+   * The config factory.
+   *
+   * @var \Drupal\Core\Config\ConfigFactoryInterface
+   */
+  protected $configFactory;
 
   /**
    * Constructs a new ModerationStateWidget object.
@@ -67,13 +66,13 @@ class ModerationStateWidget extends BaseModerationStateWidget {
    *   Moderation state transition validation service.
    * @param \Drupal\lightning_scheduler\TransitionManager $transition_manager
    *   The transition manager.
-   * @param StateInterface $state
-   *   The state service.
+   * @param \Drupal\Core\Config\ConfigFactoryInterface $config_factory
+   *   The config factory.
    */
-  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, AccountInterface $current_user, EntityTypeManagerInterface $entity_type_manager, ModerationInformation $moderation_information, StateTransitionValidationInterface $validator, TransitionManager $transition_manager, StateInterface $state) {
+  public function __construct($plugin_id, $plugin_definition, FieldDefinitionInterface $field_definition, array $settings, array $third_party_settings, AccountInterface $current_user, EntityTypeManagerInterface $entity_type_manager, ModerationInformation $moderation_information, StateTransitionValidationInterface $validator, TransitionManager $transition_manager, ConfigFactoryInterface $config_factory) {
     parent::__construct($plugin_id, $plugin_definition, $field_definition, $settings, $third_party_settings, $current_user,  $entity_type_manager, $moderation_information, $validator);
     $this->transitionManager = $transition_manager;
-    $this->state = $state;
+    $this->configFactory = $config_factory;
   }
 
   /**
@@ -91,7 +90,7 @@ class ModerationStateWidget extends BaseModerationStateWidget {
       $container->get('content_moderation.moderation_information'),
       $container->get('content_moderation.state_transition_validation'),
       $container->get('lightning_scheduler.transition_manager'),
-      $container->get('state')
+      $container->get('config.factory')
     );
   }
 
@@ -129,6 +128,7 @@ class ModerationStateWidget extends BaseModerationStateWidget {
       '#tag' => 'TransitionSet',
       '#attributes' => [
         'states' => Json::encode($states),
+        'step' => $this->configFactory->get('lightning_scheduler.settings')->get('time_step'),
       ],
       '#attached' => [
         'library' => ['lightning_scheduler/widget'],
@@ -148,12 +148,6 @@ class ModerationStateWidget extends BaseModerationStateWidget {
         ],
       ],
     ];
-
-    // If in development mode, we should be able to schedule transitions in
-    // increments of seconds.
-    if ($this->state->get('lightning_scheduler_dev')) {
-      $element['scheduled_transitions']['#attributes']['step'] = 1;
-    }
 
     // Allow the process and validation callbacks to work directly with the
     // entity.

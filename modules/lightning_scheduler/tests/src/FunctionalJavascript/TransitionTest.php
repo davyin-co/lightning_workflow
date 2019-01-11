@@ -48,7 +48,7 @@ class TransitionTest extends WebDriverTestBase {
     ]);
     $this->drupalLogin($account);
     $this->setUpTimeZone();
-    $this->container->get('state')->set('lightning_scheduler_dev', TRUE);
+    $this->setTimeStep();
   }
 
   public function testPublishInPast() {

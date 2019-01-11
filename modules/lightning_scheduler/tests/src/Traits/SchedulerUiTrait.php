@@ -94,4 +94,16 @@ trait SchedulerUiTrait {
     $this->assertSession()->hiddenFieldValueEquals($field, Json::encode($data));
   }
 
+  /**
+   * Sets the time input's step attribute.
+   *
+   * @param int $time_step
+   *   (optional) The time step.
+   */
+  protected function setTimeStep($time_step = 1) {
+    $this->config('lightning_scheduler.settings')
+      ->set('time_step', $time_step)
+      ->save();
+  }
+
 }

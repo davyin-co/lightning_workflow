@@ -189,7 +189,19 @@ export default class extends Component
             });
         };
 
-        const value = dateFormat(this.state.edit.when, 'isoTime');
+        let format;
+
+        if (this.props.step >= 3600) {
+            format = 'HH:00';
+        }
+        else if (this.props.step >= 60) {
+            format = 'HH:MM';
+        }
+        else {
+            format = 'isoTime';
+        }
+
+        const value = dateFormat(this.state.edit.when, format);
 
         return (
             <label>

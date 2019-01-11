@@ -31,7 +31,7 @@ class UiTest extends WebDriverTestBase {
     parent::setUp();
     $this->drupalPlaceBlock('local_tasks_block');
     $this->setUpTimeZone();
-    $this->container->get('state')->set('lightning_scheduler_dev', TRUE);
+    $this->setTimeStep();
   }
 
   public function testUiNotPresentWithoutModeration() {

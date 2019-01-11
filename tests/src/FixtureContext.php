@@ -83,6 +83,7 @@ final class FixtureContext extends FixtureBase {
 
     $this->installTheme('seven');
     $this->config('system.theme')->set('admin', 'seven')->save();
+    $this->config('lightning_scheduler.settings')->set('time_step', 1)->save();
   }
 
   /**
