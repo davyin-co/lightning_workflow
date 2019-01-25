@@ -21,6 +21,3 @@ drush pm-uninstall big_pipe --yes
 
 # Clear any stored time zone.
 drush config:set system.date timezone.default '' --yes
-
-# Install Toolbar so ModerationSidebar.feature can pass.
-drush pm-enable toolbar --yes
