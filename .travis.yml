@@ -51,11 +51,9 @@ install:
 before_script:
   - cd $ORCA_FIXTURE/docroot
   - $TRAVIS_BUILD_DIR/update.sh $VERSION
-  - drush runserver --default-server=builtin 8080 &>/dev/null &
-  - chromedriver --port=4444 &
 
 script:
-  - orca tests:run --no-servers --sut-only --sut $ORCA_SUT
+  - orca tests:run --sut-only --sut $ORCA_SUT
 
 after_failure:
   - cd docroot
