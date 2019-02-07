@@ -41,7 +41,7 @@ before_install:
 install:
   # Install ORCA so that we can build the fixture using that.
   - git clone --depth 1 git@github.com:acquia/orca.git ../orca
-  - $ORCA/bin/travis/install
+  - "$ORCA/bin/travis/install 8.x-3.x"
 
   # Use ORCA to build the code base.
   - orca fixture:init --force --sut-only --sut $ORCA_SUT
