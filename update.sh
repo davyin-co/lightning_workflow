@@ -18,6 +18,3 @@ drush site:install --yes --existing-config
 
 # Big Pipe interferes with non-JavaScript functional tests, so uninstall it now.
 drush pm-uninstall big_pipe --yes
-
-# Clear any stored time zone.
-drush config:set system.date timezone.default '' --yes
