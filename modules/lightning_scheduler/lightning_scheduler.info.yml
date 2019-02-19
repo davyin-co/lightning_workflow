@@ -3,6 +3,7 @@ core: 8.x
 type: module
 description: 'Allows you to schedule changes in moderation state.'
 package: Lightning
+configure: lightning_scheduler.settings
 dependencies:
   - drupal:content_moderation
   - drupal:datetime
