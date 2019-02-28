@@ -48,6 +48,9 @@ install:
   - git clone --depth 1 git@github.com:acquia/orca.git ../orca
   - "$ORCA/bin/travis/install 8.x-3.x"
 
+  # Run ORCA static analysis tools.
+  - orca static-analysis:run ./
+
   # Use ORCA to build the code base.
   - orca fixture:init -f --sut $ORCA_SUT $ORCA_FIXTURE_FLAGS
   - # Install dev dependencies.
