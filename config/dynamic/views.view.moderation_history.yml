@@ -1,10 +1,5 @@
 langcode: en
 status: true
-dependencies:
-  module:
-    - content_moderation
-    - node
-    - user
 id: moderation_history
 label: 'Moderation history'
 module: views
