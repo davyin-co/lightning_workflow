@@ -1,3 +1,7 @@
+## 3.6.0
+* Fixed a bug that could occur with Drupal 8.7 when installing the
+  moderation_history view.
+
 ## 3.5.0
 * Lightning Workflow is now compatible with Lighting Core 4.x
   (Drupal core 8.7.x).

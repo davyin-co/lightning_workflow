@@ -34,7 +34,7 @@ before_install:
   - export ORCA_FIXTURE=$ORCA-build
   - export ORCA_SUT_NAME=drupal/lightning_workflow
   - export ORCA_SUT_BRANCH=8.x-3.x
-  - export ORCA_PACKAGES_CONFIG_ALTER=../lightning-workflow/tests/packages.yml
+  # - export ORCA_PACKAGES_CONFIG_ALTER=../lightning-workflow/tests/packages.yml
 
   - export PATH="$HOME/.composer/vendor/bin:$PATH"
   - export PATH="$ORCA/bin:$PATH"
@@ -52,7 +52,7 @@ install:
   - orca static-analysis:run ./
 
   # Use ORCA to build the code base.
-  - orca fixture:init -f --sut $ORCA_SUT_NAME --core 8.7.x-dev $ORCA_FIXTURE_FLAGS
+  - orca fixture:init -f --sut $ORCA_SUT_NAME $ORCA_FIXTURE_FLAGS
   - # Install dev dependencies.
   - composer require --dev drupal/inline_entity_form --working-dir $ORCA_FIXTURE
 
