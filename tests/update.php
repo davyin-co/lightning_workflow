@@ -22,7 +22,9 @@ Drupal::configFactory()->getEditable('media.type.tweet')->delete();
 
 Drupal::service('plugin.cache_clearer')->clearCachedDefinitions();
 
-$node_type = entity_load('node_type', 'page');
+$node_type = \Drupal::entityTypeManager()
+  ->getStorage('node_type')
+  ->load('page');
 if ($node_type) {
   $node_type->delete();
 }
