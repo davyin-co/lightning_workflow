@@ -121,25 +121,28 @@ class InlineEntityFormTest extends BrowserTestBase {
   }
 
   public function testHostEntityWithoutModeration() {
+    $assert_session = $this->assertSession();
+
     // Test with an un-moderated host entity.
     $this->drupalGet('/user/' . $this->rootUser->id() . '/edit');
-    $this->assertSession()->statusCodeEquals(200);
+    $assert_session->statusCodeEquals(200);
     $inline_entity_form = $this->assertInlineEntityForm();
-    $this->assertSession()->fieldExists('Title', $inline_entity_form)->setValue('Kaboom?');
-    $this->assertSession()->selectExists('field_inline_entity[0][inline_entity_form][moderation_state][0][state]', $inline_entity_form);
-    $this->assertSession()->buttonExists('Save')->press();
-    $this->assertSession()->statusCodeEquals(200);
+    $inline_entity_form->fillField('Title', 'Kaboom?');
+    $assert_session->selectExists('field_inline_entity[0][inline_entity_form][moderation_state][0][state]', $inline_entity_form);
+    $this->getSession()->getPage()->pressButton('Save');
+    $assert_session->statusCodeEquals(200);
   }
 
   /**
    * @depends testHostEntityWithoutModeration
    */
   public function testHostEntityWithModeration() {
+    $page = $this->getSession()->getPage();
+
     // Test with a moderated host entity.
     $this->drupalGet('node/add/alpha');
-    $this->assertSession()->fieldExists('Title')->setValue('Foobar');
-    $inline_entity_form = $this->assertInlineEntityForm();
-    $this->assertSession()->fieldExists('Title', $inline_entity_form)->setValue('Foobaz');
+    $page->fillField('Title', 'Foobar');
+    $this->assertInlineEntityForm()->fillField('Title', 'Foobar');
 
     $host_field = 'moderation_state[0][scheduled_transitions][data]';
     $inline_field = 'field_inline_entity[0][inline_entity_form][moderation_state][0][scheduled_transitions][data]';
@@ -158,7 +161,7 @@ class InlineEntityFormTest extends BrowserTestBase {
     ];
     $this->setTransitionData($host_field, $transition_1);
     $this->setTransitionData($inline_field, $transition_2);
-    $this->assertSession()->buttonExists('Save')->press();
+    $page->pressButton('Save');
 
     /** @var \Drupal\Core\Entity\EntityStorageInterface $storage */
     $storage = $this->container->get('entity_type.manager')->getStorage('node');
