@@ -134,7 +134,7 @@ class TransitionManager {
         return;
       }
 
-      if (! is_numeric($transition['when'])) {
+      if (! preg_match('/^[0-9]+$/', $transition['when'])) {
         $variables = [
           '%when' => $transition['when'],
         ];
