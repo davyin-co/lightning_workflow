@@ -1,3 +1,7 @@
+## 3.7.0
+* Many changes to internal testing infrastructure, but nothing that
+  should affect users of Lightning Workflow.
+
 ## 3.6.0
 * Fixed a bug that could occur with Drupal 8.7 when installing the
   moderation_history view.
