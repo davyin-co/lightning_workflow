@@ -1,5 +1,5 @@
 {
-    "name": "drupal/lightning_scheduler",
+    "name": "drupal/lightning_workflow-lightning_scheduler",
     "type": "drupal-module",
     "description": "Allows authors to schedule automatic transitions between workflow states.",
     "license": "GPL-2.0-or-later",
