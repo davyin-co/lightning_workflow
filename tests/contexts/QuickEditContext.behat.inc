@@ -15,8 +15,8 @@ class QuickEditContext extends DrupalSubContextBase {
   /**
    * Asserts that Quick Edit is enabled for at least one entity on the page.
    *
-   * @throws \Behat\Mink\Exception\ExpectationException if Quick Edit is
-   * disabled on the current page.
+   * @throws \Behat\Mink\Exception\ExpectationException
+   *   If Quick Edit is disabled on the current page.
    *
    * @Then Quick Edit should be enabled
    */
@@ -33,8 +33,8 @@ class QuickEditContext extends DrupalSubContextBase {
   /**
    * Asserts that Quick Edit is not enabled for any entities on the page.
    *
-   * @throws \Behat\Mink\Exception\ExpectationException if Quick Edit is enabled
-   * on the current page.
+   * @throws \Behat\Mink\Exception\ExpectationException
+   *   If Quick Edit is enabled on the current page.
    *
    * @Then Quick Edit should be disabled
    */

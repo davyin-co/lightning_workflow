@@ -64,10 +64,15 @@ class ModerationHistoryTest extends BrowserTestBase {
    * Creates a new revision of the given $node.
    *
    * @param \Drupal\node\NodeInterface $node
+   *   The node which should receive a new revision.
    * @param int $user_id
+   *   The ID of the user who created the revision.
    * @param int $timestamp
+   *   The time that the revision was created.
    * @param string $state
+   *   The desired moderation state.
    * @param string $revision_log
+   *   The revision log message.
    *
    * @throws \Drupal\Core\Entity\EntityStorageException
    */

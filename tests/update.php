@@ -1,7 +1,12 @@
 <?php
 
-// Forcibly uninstall Lightning Dev switch the installation profile from
-// Standard to Minimal, and delete defunct config objects.
+/**
+ * @file
+ * Prepares a fixture to be updated for testing.
+ *
+ * Forcibly uninstalls Lightning Dev, switches the installation profile from
+ * Standard to Minimal, and deletes defunct config objects.
+ */
 
 Drupal::configFactory()
   ->getEditable('core.extension')

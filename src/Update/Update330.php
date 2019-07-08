@@ -11,6 +11,8 @@ use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
+ * Contains optional updates targeting Lightning Workflow 3.3.0.
+ *
  * @Update("3.3.0")
  */
 final class Update330 implements ContainerInjectionInterface {
@@ -66,10 +68,9 @@ final class Update330 implements ContainerInjectionInterface {
   }
 
   /**
-   * Rewrites the Moderation History View to fix timestamp and author
-   * references.
+   * Fixes timestamp and author references in the Moderation History view.
    *
-   * @param StyleInterface $io
+   * @param \Symfony\Component\Console\Style\StyleInterface $io
    *   The I/O style.
    *
    * @update

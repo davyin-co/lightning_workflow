@@ -160,7 +160,7 @@ class ScheduledTransitionTest extends BrowserTestBase {
       [
         'when' => $now + 20,
         'state' => 'archived',
-      ]
+      ],
     ]);
     $page->pressButton('Save');
 
@@ -198,7 +198,7 @@ class ScheduledTransitionTest extends BrowserTestBase {
       [
         'when' => time() - 10,
         'state' => 'archived',
-      ]
+      ],
     ]);
     $page->pressButton('Save');
 

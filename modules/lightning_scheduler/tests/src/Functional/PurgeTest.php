@@ -32,7 +32,7 @@ class PurgeTest extends MigrationTestBase {
 
     $storage = $this->postMigration('node');
 
-    /** @var NodeInterface $node */
+    /** @var \Drupal\node\NodeInterface $node */
     $node = $storage->load(1);
     $this->assertInstanceOf(NodeInterface::class, $node);
     $this->assertNode($node);

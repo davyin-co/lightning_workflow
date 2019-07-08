@@ -59,7 +59,8 @@ class TransitionManagerTest extends KernelTestBase {
   /**
    * Data provider for ::testValidate().
    *
-   * @return array
+   * @return array[]
+   *   Sets of arguments to pass to ::testValidate().
    */
   public function providerValidate() {
     return [

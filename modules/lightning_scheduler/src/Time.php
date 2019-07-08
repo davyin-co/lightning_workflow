@@ -6,6 +6,9 @@ use Drupal\Component\Datetime\Time as BaseTime;
 use Drupal\Core\State\StateInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * Decorates the time service to facilitate testing.
+ */
 class Time extends BaseTime {
 
   /**

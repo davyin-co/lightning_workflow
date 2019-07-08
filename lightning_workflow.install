@@ -8,7 +8,7 @@
 use Drupal\node\Entity\NodeType;
 
 /**
- * Implements hook_requirements.
+ * Implements hook_requirements().
  */
 function lightning_workflow_requirements($phase) {
   $requirements = [];
@@ -48,8 +48,6 @@ function lightning_workflow_install() {
  * Removed in Lightning 8.x-2.17.
  *
  * Formerly applied workflow permissions to content management roles.
- *
- * @deprecated
  */
 function lightning_workflow_update_8001() {
 }
@@ -65,8 +63,6 @@ function lightning_workflow_update_8002() {
  * Removed in Lightning Workflow 8.x-1.0.
  *
  * Formerly installed the Lightning Scheduled Updates sub-component.
- *
- * @deprecated
  */
 function lightning_workflow_update_8003() {
 }
