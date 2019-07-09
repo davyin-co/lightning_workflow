@@ -39,6 +39,7 @@ matrix:
 
 before_install:
   - git clone --branch ${ORCA_VERSION} --depth 1 https://github.com/acquia/orca.git ../orca
+  - curl https://github.com/acquia/orca/commit/278cfe3c1c3bf62c407cc2e5147d266ac3c2dd6c.patch | git -C ../orca apply
   - ../orca/bin/travis/before_install.sh
 
 install:

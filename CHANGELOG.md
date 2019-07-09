@@ -1,3 +1,7 @@
+## 3.8.0
+* Internal changes to testing infrastructure, but nothing that
+  should affect users of Lightning Workflow.
+
 ## 3.7.0
 * Many changes to internal testing infrastructure, but nothing that
   should affect users of Lightning Workflow.
