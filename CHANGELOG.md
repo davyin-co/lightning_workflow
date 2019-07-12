@@ -1,3 +1,6 @@
+## 3.9.0
+* Updated Moderation Sidebar to 1.2.
+
 ## 3.8.0
 * Internal changes to testing infrastructure, but nothing that
   should affect users of Lightning Workflow.
