@@ -43,6 +43,10 @@ final class FixtureContext extends FixtureBase {
     $this->installModule('lightning_roles');
     $this->installModule('pathauto');
     $this->installModule('views');
+    // Install autosave_form and conflict to ensure that they don't break our
+    // scenarios.
+    $this->installModule('autosave_form');
+    $this->installModule('conflict');
 
     // Cache the original state of the editorial workflow.
     $this->config('workflows.workflow.editorial');

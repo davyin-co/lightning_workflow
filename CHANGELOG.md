@@ -1,4 +1,6 @@
 ## 3.9.0
+* Added the Autosave Form and Conflict modules as soft dependencies to
+  Lightning Workflow. (Issue #3060244)
 * Updated Moderation Sidebar to 1.2.
 
 ## 3.8.0
