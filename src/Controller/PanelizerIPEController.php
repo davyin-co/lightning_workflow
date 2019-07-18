@@ -10,6 +10,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Controller for Panels IPE routes that are specific to Panelizer.
+ *
+ * @internal
+ *   This is an internal part of Lightning Workflow's integration with Panelizer
+ *   and may be changed or removed at any time. External code should not use
+ *   or extend this class in any way!
  */
 class PanelizerIPEController extends PanelizerPanelsIPEController {
 
