@@ -5,7 +5,6 @@ namespace Drupal\Tests\lightning_workflow;
 use Drupal\block\Entity\Block;
 use Drupal\node\Entity\NodeType;
 use Drupal\Tests\lightning_core\FixtureBase;
-use Drupal\user\Entity\Role;
 use Drupal\views\Entity\View;
 
 final class FixtureContext extends FixtureBase {
@@ -14,16 +13,6 @@ final class FixtureContext extends FixtureBase {
    * @BeforeScenario
    */
   public function setUp() {
-    // Create the administrator role if it does not already exist.
-    if (!Role::load('administrator')) {
-      $role = Role::create([
-        'id' => 'administrator',
-        'label' => 'Administrator',
-      ])->setIsAdmin(TRUE);
-
-      $this->save($role);
-    }
-
     // Lightning Workflow optionally integrates with Diff, and for testing
     // purposes we'd like to enable that integration. In order to test with
     // meaningful responsibility-based roles, we also enable Lightning Roles.

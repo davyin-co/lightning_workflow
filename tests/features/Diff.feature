@@ -3,7 +3,7 @@ Feature: Diffing different revisions of content
 
   @5b4ba63e @with-module:diff
   Scenario: Diffing two node revisions
-    Given I am logged in as an administrator
+    Given I am logged in as a user with the "access content overview, view any unpublished content, edit any test content, use editorial transition create_new_draft, view all revisions" permissions
     And test content:
       | title       | body           | moderation_state |
       | Pastafazoul | First revision | draft            |
