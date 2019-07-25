@@ -17,7 +17,6 @@ final class FixtureContext extends FixtureBase {
     // purposes we'd like to enable that integration. In order to test with
     // meaningful responsibility-based roles, we also enable Lightning Roles.
     $this->installModule('lightning_roles');
-    $this->installModule('pathauto');
     $this->installModule('views');
     // Install autosave_form and conflict to ensure that they don't break our
     // scenarios.
