@@ -12,6 +12,13 @@ use Drupal\node\Entity\NodeType;
 
 /**
  * Contains miscellaneous step definitions for testing moderation UIs.
+ *
+ * @internal
+ *   This is an internal part of Lightning Workflow's testing system and may be
+ *   changed or removed at any time without warning. External code should not
+ *   extend, instantiate, or use this class in any way! If you want to use the
+ *   functionality of this class, you should copy the relevant code into your
+ *   own project.
  */
 final class ModerationContext extends DrupalSubContextBase {
 
