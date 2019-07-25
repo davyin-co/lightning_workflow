@@ -3,7 +3,6 @@
 namespace Drupal\Tests\lightning_workflow;
 
 use Drupal\block\Entity\Block;
-use Drupal\lightning_core\ConfigHelper as Config;
 use Drupal\node\Entity\NodeType;
 use Drupal\Tests\lightning_core\FixtureBase;
 use Drupal\user\Entity\Role;
@@ -25,18 +24,6 @@ final class FixtureContext extends FixtureBase {
       $this->save($role);
     }
 
-    if (!$this->container->get('module_handler')->moduleExists('lightning_page')) {
-      $config = new Config(
-        $this->container->get('extension.list.module')->get('lightning_page'),
-        $this->container->get('config.factory'),
-        $this->container->get('entity_type.manager')
-      );
-      $config->deleteAll();
-    }
-
-    // Install Lightning Page separately in order to ensure that the optional
-    // Pathauto config that it ships is installed too.
-    $this->installModule('lightning_page');
     // Lightning Workflow optionally integrates with Diff, and for testing
     // purposes we'd like to enable that integration. In order to test with
     // meaningful responsibility-based roles, we also enable Lightning Roles.
@@ -51,14 +38,14 @@ final class FixtureContext extends FixtureBase {
     // Cache the original state of the editorial workflow.
     $this->config('workflows.workflow.editorial');
 
-    // Add moderation to the page content type.
-    /** @var \Drupal\node\NodeTypeInterface $node_type */
-    $node_type = NodeType::load('page')
-      ->setThirdPartySetting('lightning_workflow', 'workflow', 'editorial');
-    $dependencies = $node_type->getDependencies();
-    $dependencies['enforced']['module'][] = 'lightning_page';
-    $node_type->set('dependencies', $dependencies)->save();
-    lightning_workflow_node_type_insert($node_type);
+    // Create a temporary content type specifically for testing.
+    $node_type = NodeType::create([
+      'type' => 'test',
+      'name' => 'Test',
+    ]);
+    $node_type->setThirdPartySetting('lightning_workflow', 'workflow', 'editorial');
+    $this->save($node_type);
+    node_add_body_field($node_type);
 
     // Cache the original state of the content view.
     $this->config('views.view.content');

@@ -4,7 +4,7 @@ Feature: Moderated content
   content.
 
   Background:
-    Given page content:
+    Given test content:
       | title   | moderation_state | promote |
       | Alpha   | review           | 1       |
       | Beta    | published        | 1       |
@@ -12,7 +12,7 @@ Feature: Moderated content
 
   @03ebc3ee @orca_public
   Scenario: Publishing moderated content
-    Given I am logged in as a user with the "access content overview, view any unpublished content, use editorial transition review, use editorial transition publish, create page content, edit any page content, create url aliases" permissions
+    Given I am logged in as a user with the "access content overview, view any unpublished content, use editorial transition review, use editorial transition publish, create test content, edit any test content, create url aliases" permissions
     When I visit "/admin/content"
     And I click "Alpha"
     And I visit the edit form
@@ -24,7 +24,7 @@ Feature: Moderated content
 
   @c0c17d43 @orca_public
   Scenario: Unpublishing moderated content
-    Given I am logged in as a user with the "access content overview, use editorial transition publish, use editorial transition archive, create page content, edit any page content, create url aliases" permissions
+    Given I am logged in as a user with the "access content overview, use editorial transition publish, use editorial transition archive, create test content, edit any test content, create url aliases" permissions
     And I visit "/admin/content"
     And I click "Beta"
     And I visit the edit form
