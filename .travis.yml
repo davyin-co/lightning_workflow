@@ -16,14 +16,15 @@ env:
   global:
     - ORCA_SUT_NAME=drupal/lightning_workflow
     - ORCA_SUT_BRANCH=8.x-3.x
-    - ORCA_VERSION=v1.0.0-alpha17
+    - ORCA_VERSION=master
+    - ORCA_TELEMETRY_ENABLE=TRUE
 
 matrix:
   fast_finish: true
   include:
     # Standard ORCA jobs.
     - { name: "Static code analysis", env: ORCA_JOB=STATIC_CODE_ANALYSIS }
-    - { name: "Deprecated code scan", env: ORCA_JOB=DEPRECATED_CODE_SCAN_SUT }
+    - { name: "Deprecated code scan", env: ORCA_JOB=DEPRECATED_CODE_SCAN }
     - { name: "Isolated test w/ recommended package versions", env: ORCA_JOB=ISOLATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions", env: ORCA_JOB=INTEGRATED_RECOMMENDED }
     - { name: "Integrated test w/ recommended package versions & previous minor release of Drupal core", env: ORCA_JOB=CORE_PREVIOUS }
@@ -39,8 +40,6 @@ matrix:
 
 before_install:
   - git clone --branch ${ORCA_VERSION} --depth 1 https://github.com/acquia/orca.git ../orca
-  - curl https://github.com/acquia/orca/commit/278cfe3c1c3bf62c407cc2e5147d266ac3c2dd6c.patch | git -C ../orca apply
-  - curl https://github.com/acquia/orca/commit/2901aa5d9ff0c02cd2ca773fe4ff75f1010e7e37.patch | git -C ../orca apply
   - ../orca/bin/travis/before_install.sh
 
 install:
