@@ -14,7 +14,7 @@ fi
 # Install Drupal.
 drush site:install minimal --yes --config ./drush.yml --account-pass admin --db-url $DB_URL
 # Install sub-components.
-drush pm-enable lightning_workflow lightning_scheduler --yes
+drush pm-enable autosave_form conflict lightning_workflow lightning_scheduler --yes
 
 # Make settings writable.
 chmod +w $SITE_DIR $SETTINGS

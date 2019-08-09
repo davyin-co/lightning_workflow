@@ -18,10 +18,6 @@ final class FixtureContext extends FixtureBase {
     // meaningful responsibility-based roles, we also enable Lightning Roles.
     $this->installModule('lightning_roles');
     $this->installModule('views');
-    // Install autosave_form and conflict to ensure that they don't break our
-    // scenarios.
-    $this->installModule('autosave_form');
-    $this->installModule('conflict');
 
     // Cache the original state of the editorial workflow.
     $this->config('workflows.workflow.editorial');
@@ -32,6 +28,7 @@ final class FixtureContext extends FixtureBase {
       'name' => 'Test',
     ]);
     $node_type->setThirdPartySetting('lightning_workflow', 'workflow', 'editorial');
+    $node_type->setThirdPartySetting('lightning_workflow', 'autosave', TRUE);
     $this->save($node_type);
     node_add_body_field($node_type);
 

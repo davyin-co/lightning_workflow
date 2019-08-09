@@ -2,6 +2,10 @@
 
 namespace Acquia\LightningExtension\Context;
 
+use Behat\Mink\Element\DocumentElement;
+use Behat\Mink\Element\NodeElement;
+use Behat\Mink\Exception\ElementNotFoundException;
+use Behat\Mink\Exception\ExpectationException;
 use Behat\Mink\Exception\UnsupportedDriverActionException;
 use Drupal\Component\Utility\Random;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;
@@ -196,6 +200,53 @@ final class ModerationContext extends DrupalSubContextBase {
     $assert->elementExists('css', "[data-block-plugin-id='views_block:moderation_dashboard_recent_changes-block_1']");
     $assert->elementExists('css', "[data-block-plugin-id='views_block:moderation_dashboard_recent_changes-block_2']");
     $assert->elementExists('css', "[data-block-plugin-id='views_block:moderation_dashboard_recently_created-block_2']");
+  }
+
+  /**
+   * Autosaves the current form.
+   *
+   * @When I wait for my work to be autosaved
+   */
+  public function awaitAutosave() {
+    $driver = $this->getSession()->getDriver();
+
+    $element = $this->assertSession()
+      ->elementExists('css', '#autosave-notification');
+
+    $is_visible = $element->waitFor(20, function (NodeElement $element) {
+      return $element->isVisible();
+    });
+    if ($is_visible == FALSE) {
+      throw new ExpectationException('Expected autosave notification to appear, but it did not.', $driver);
+    }
+
+    $is_hidden = $element->waitFor(10, function (NodeElement $element) {
+      return $element->isVisible() === FALSE;
+    });
+    if ($is_hidden == FALSE) {
+      throw new ExpectationException('Expected autosave notification to disappear after saving, but it did not.', $driver);
+    }
+  }
+
+  /**
+   * Restores autosaved work.
+   *
+   * @Then I should be able to restore my work
+   */
+  public function assertRestoreFromAutosave() {
+    /** @var \Behat\Mink\Element\NodeElement $button */
+    $button = $this->getSession()
+      ->getPage()
+      ->waitFor(10, function (DocumentElement $page) {
+        return $page->findButton('Resume editing');
+      });
+
+    if ($button) {
+      $button->press();
+    }
+    else {
+      throw new ElementNotFoundException($this->getSession()->getDriver(), 'button', 'named', 'Resume editing');
+    }
   }
 
 }

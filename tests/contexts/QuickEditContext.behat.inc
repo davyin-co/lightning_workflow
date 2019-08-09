@@ -34,12 +34,10 @@ final class QuickEditContext extends RawMinkContext implements DrupalSubContextI
    * @Then Quick Edit should be enabled
    */
   public function assertEnabled() {
-    $session = $this->getSession();
-
-    $is_enabled = $session->wait(10000, 'Drupal.quickedit.collections.entities.length > 0');
+    $is_enabled = $this->await('Drupal.quickedit.collections.entities.length > 0');
 
     if (empty($is_enabled)) {
-      throw new ExpectationException('Expected Quick Edit to be enabled, but it is not.', $session->getDriver());
+      throw new ExpectationException('Expected Quick Edit to be enabled, but it is not.', $this->getSession()->getDriver());
     }
   }
 
@@ -52,12 +50,10 @@ final class QuickEditContext extends RawMinkContext implements DrupalSubContextI
    * @Then Quick Edit should be disabled
    */
   public function assertDisabled() {
-    $session = $this->getSession();
-
-    $is_disabled = $session->wait(10000, 'Drupal.quickedit.collections.entities.length === 0');
+    $is_disabled = $this->await('Drupal.quickedit.collections.entities.length === 0');
 
     if (empty($is_disabled)) {
-      throw new ExpectationException('Expected Quick Edit to be disabled, but it is not.', $session->getDriver());
+      throw new ExpectationException('Expected Quick Edit to be disabled, but it is not.', $this->getSession()->getDriver());
     }
   }
 
@@ -73,6 +69,36 @@ final class QuickEditContext extends RawMinkContext implements DrupalSubContextI
     $assert = $this->assertSession();
     $links = $assert->elementExists('css', "div[data-block-plugin-id='$plugin'] ul.contextual-links");
     $assert->elementExists('named', ['link', 'Quick edit'], $links);
+  }
+
+  /**
+   * Waits for any running AJAX requests to finish and a condition to be true.
+   *
+   * @param string $condition
+   *   (optional) An additional JavaScript expression which is expected to be
+   *   TRUE once AJAX requests are finished. Defaults to 'true'.
+   *
+   * @return bool
+   *   TRUE if all AJAX requests are finished and the given condition is true,
+   *   otherwise FALSE.
+   */
+  private function await($condition = 'true') {
+    $condition = <<<JS
+(function() {
+    function isAjaxing(instance) {
+        return instance && instance.ajaxing === true;
+    }
+    return (
+        // Assert no AJAX request is running (via jQuery or Drupal) and no
+        // animation is running.
+        (typeof jQuery === 'undefined' || (jQuery.active === 0 && jQuery(':animated').length === 0)) &&
+        (typeof Drupal === 'undefined' || typeof Drupal.ajax === 'undefined' || typeof Drupal.ajax.instances === 'undefined' || !Drupal.ajax.instances.some(isAjaxing)) &&
+        ($condition)
+    );
+}());
+JS;
+
+    return $this->getSession()->wait(10000, $condition);
   }
 
 }
