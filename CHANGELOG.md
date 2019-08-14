@@ -2,6 +2,8 @@
 * Added the Autosave Form and Conflict modules as soft dependencies to
   Lightning Workflow. (Issue #3060244)
 * Updated Moderation Sidebar to 1.2.
+* Added labels to the base fields created by Lightning Scheduler
+  (Issues #3070984 and #3031460)
 
 ## 3.8.0
 * Internal changes to testing infrastructure, but nothing that
