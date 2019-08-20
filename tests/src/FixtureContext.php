@@ -13,10 +13,6 @@ final class FixtureContext extends FixtureBase {
    * @BeforeScenario
    */
   public function setUp() {
-    // Lightning Workflow optionally integrates with Diff, and for testing
-    // purposes we'd like to enable that integration. In order to test with
-    // meaningful responsibility-based roles, we also enable Lightning Roles.
-    $this->installModule('lightning_roles');
     $this->installModule('views');
 
     // Cache the original state of the editorial workflow.

@@ -1,52 +1,51 @@
 <?php
 
-namespace Drupal\Tests\lightning_workflow\ExistingSite;
+namespace Drupal\Tests\lightning_workflow\Functional;
 
-use Drupal\Tests\lightning_workflow\FixtureContext;
-use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
+use Drupal\Tests\BrowserTestBase;
+use Drupal\views\Entity\View;
 use Drupal\workflows\Entity\Workflow;
-use weitzman\DrupalTestTraits\ExistingSiteBase;
 
 /**
- * @group lightning
  * @group lightning_workflow
  */
-class ContentTypeModerationTest extends ExistingSiteBase {
-
-  use ContentTypeCreationTrait;
-
-  /**
-   * The fixture context.
-   *
-   * @var \Drupal\Tests\lightning_workflow\FixtureContext
-   */
-  private $fixtureContext;
+class ContentTypeModerationTest extends BrowserTestBase {
 
   /**
    * {@inheritdoc}
    */
-  protected function prepareRequest() {
-    // The base implementation of this method will set a special cookie
-    // identifying the Mink session as a test user agent. For this kind of test,
-    // though, we don't need that.
-  }
+  protected static $modules = [
+    'block',
+    'lightning_roles',
+    'lightning_workflow',
+    'views',
+  ];
 
   /**
    * {@inheritdoc}
    */
-  public function setUp() {
+  protected function setUp() {
     parent::setUp();
-    $this->fixtureContext = new FixtureContext($this->container);
-    $this->fixtureContext->setUp();
-    drupal_flush_all_caches();
-  }
+    $this->drupalPlaceBlock('local_tasks_block');
 
-  /**
-   * {@inheritdoc}
-   */
-  public function tearDown() {
-    $this->fixtureContext->tearDown();
-    parent::tearDown();
+    // Allow the content view to filter by moderation state. This is done when
+    // the view is first created, so we need to create a duplicate of the
+    // content view in order for this to work.
+    // @see lightning_workflow_view_presave()
+    $original_view = View::load('content');
+    $duplicate_view = $original_view->createDuplicate()->set('id', 'content');
+    $original_view->delete();
+    $duplicate_view->save();
+
+    // Create a content type with moderation applied.
+    $this->drupalCreateContentType([
+      'type' => 'test',
+      'third_party_settings' => [
+        'lightning_workflow' => [
+          'workflow' => 'editorial',
+        ],
+      ],
+    ]);
   }
 
   /**
@@ -55,17 +54,17 @@ class ContentTypeModerationTest extends ExistingSiteBase {
   public function testUnpublishedAccess() {
     $assert_session = $this->assertSession();
 
-    $this->createNode([
+    $this->drupalCreateNode([
       'type' => 'test',
       'title' => 'Moderation Test 1',
       'promote' => TRUE,
       'moderation_state' => 'review',
     ]);
-    $this->visit('/');
+    $this->drupalGet('<front>');
     $assert_session->statusCodeEquals(200);
-    $assert_session->linkNotExists('Moderation Test 1');
+    $assert_session->pageTextNotContains('Moderation Test 1');
 
-    $account = $this->createUser([
+    $account = $this->drupalCreateUser([
       'access content overview',
       'view any unpublished content',
     ]);
@@ -79,13 +78,13 @@ class ContentTypeModerationTest extends ExistingSiteBase {
   public function testReviewerAccess() {
     $assert_session = $this->assertSession();
 
-    $this->createNode([
+    $this->drupalCreateNode([
       'type' => 'test',
       'title' => 'Version 1',
       'moderation_state' => 'draft',
     ]);
 
-    $account = $this->createUser();
+    $account = $this->drupalCreateUser();
     $account->addRole('test_reviewer');
     $account->save();
     $this->drupalLogin($account);
@@ -104,29 +103,29 @@ class ContentTypeModerationTest extends ExistingSiteBase {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
 
-    $this->createNode([
+    $this->drupalCreateNode([
       'type' => 'test',
       'title' => 'Version 1',
       'moderation_state' => 'draft',
     ]);
 
-    $account = $this->createUser([], NULL, TRUE);
+    $account = $this->drupalCreateUser([], NULL, TRUE);
     $this->drupalLogin($account);
 
     $this->drupalGet('/admin/content');
     $assert_session->statusCodeEquals(200);
     $page->clickLink('Version 1');
-    $assert_session->elementExists('css', 'a[rel="edit-form"]')->click();
+    $this->clickEditLink();
     $page->fillField('Title', 'Version 2');
     $page->selectFieldOption('moderation_state[0][state]', 'published');
     $page->pressButton('Save');
-    $assert_session->elementExists('css', 'a[rel="edit-form"]')->click();
+    $this->clickEditLink();
     $page->fillField('Title', 'Version 3');
     $page->selectFieldOption('moderation_state[0][state]', 'draft');
     $page->pressButton('Save');
 
     $this->drupalLogout();
-    $account = $this->createUser();
+    $account = $this->drupalCreateUser();
     $account->addRole('test_reviewer');
     $account->save();
     $this->drupalLogin($account);
@@ -144,16 +143,16 @@ class ContentTypeModerationTest extends ExistingSiteBase {
   public function testCreateNewRevisionCheckbox() {
     $assert_session = $this->assertSession();
 
-    $account = $this->createUser([], NULL, TRUE);
+    $account = $this->drupalCreateUser([], NULL, TRUE);
     $this->drupalLogin($account);
 
-    $this->createNode([
+    $this->drupalCreateNode([
       'type' => $this->createContentType()->id(),
       'title' => 'Deft Zebra',
     ]);
     $this->drupalGet('/admin/content');
     $this->getSession()->getPage()->clickLink('Deft Zebra');
-    $assert_session->elementExists('css', 'a[rel="edit-form"]')->click();
+    $this->clickEditLink();
     $assert_session->fieldExists('Create new revision');
   }
 
@@ -165,13 +164,13 @@ class ContentTypeModerationTest extends ExistingSiteBase {
 
     $node_type = $this->createContentType()->id();
 
-    $account = $this->createUser([
+    $account = $this->drupalCreateUser([
       'administer nodes',
       "create $node_type content",
     ]);
     $this->drupalLogin($account);
 
-    $this->visit("/node/add/$node_type");
+    $this->drupalGet("/node/add/$node_type");
     $assert_session->buttonExists('Save');
     $assert_session->checkboxChecked('Published');
     $assert_session->buttonNotExists('Save and publish');
@@ -199,20 +198,20 @@ class ContentTypeModerationTest extends ExistingSiteBase {
     $assert_session = $this->assertSession();
     $page = $this->getSession()->getPage();
 
-    $account = $this->createUser([], NULL, TRUE);
+    $account = $this->drupalCreateUser([], NULL, TRUE);
     $this->drupalLogin($account);
 
-    $this->createNode([
+    $this->drupalCreateNode([
       'type' => 'test',
       'title' => 'Foo',
       'moderation_state' => 'draft',
     ]);
-    $this->createNode([
+    $this->drupalCreateNode([
       'type' => 'test',
       'title' => 'Bar',
       'moderation_state' => 'draft',
     ]);
-    $this->createNode([
+    $this->drupalCreateNode([
       'type' => 'test',
       'title' => 'Baz',
       'moderation_state' => 'draft',
@@ -226,6 +225,13 @@ class ContentTypeModerationTest extends ExistingSiteBase {
 
     $assert_session->optionNotExists('Action', 'node_publish_action');
     $assert_session->optionNotExists('Action', 'node_unpublish_action');
+  }
+
+  /**
+   * Clicks the "Edit" link on a canonical node page.
+   */
+  private function clickEditLink() {
+    $this->assertSession()->elementExists('css', 'a[rel="edit-form"]')->click();
   }
 
 }

@@ -6,11 +6,8 @@ use Behat\Mink\Element\DocumentElement;
 use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
-use Behat\Mink\Exception\UnsupportedDriverActionException;
-use Drupal\Component\Utility\Random;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;
 use Drupal\workflows\Entity\Workflow;
-use Drupal\workflows\StateInterface;
 use Webmozart\Assert\Assert;
 use Drupal\node\Entity\NodeType;
 
@@ -29,13 +26,6 @@ final class ModerationContext extends DrupalSubContextBase {
   use AwaitTrait;
 
   /**
-   * The node created for the test.
-   *
-   * @var \Drupal\node\NodeInterface
-   */
-  private $node;
-
-  /**
    * Content types which had moderation enabled during the scenario.
    *
    * @var string[]
@@ -48,10 +38,6 @@ final class ModerationContext extends DrupalSubContextBase {
    * @AfterScenario
    */
   public function tearDown() {
-    if ($this->node) {
-      $this->node->delete();
-    }
-
     /** @var \Drupal\workflows\WorkflowInterface $workflow */
     $workflow = Workflow::load('editorial');
     Assert::isInstanceOf($workflow, '\Drupal\workflows\WorkflowInterface');
@@ -63,108 +49,32 @@ final class ModerationContext extends DrupalSubContextBase {
   }
 
   /**
-   * Returns the workflow type plugin for the current node.
+   * Opens the moderation sidebar.
    *
-   * @return \Drupal\workflows\WorkflowTypeInterface
-   *   The workflow type plugin.
+   * @When I open the moderation sidebar
    */
-  private function getWorkflow() {
-    Assert::notEmpty($this->node);
+  public function openModerationSidebar() {
+    $this->assertSession()
+      ->elementExists('css', '#toolbar-bar')
+      ->clickLink('Tasks');
 
-    /** @var \Drupal\workflows\WorkflowInterface $workflow */
-    $workflow = \Drupal::service('content_moderation.moderation_information')
-      ->getWorkflowForEntity($this->node);
-
-    Assert::notEmpty($workflow);
-
-    return $workflow->getTypePlugin();
+    $this->awaitElement('.moderation-sidebar-container');
   }
 
   /**
-   * Returns the workflow state ID matching a label.
+   * Asserts that the "Tasks" toolbar link indicates a moderation state.
    *
-   * @param string $state_label
-   *   The state label.
+   * @param string $state
+   *   The label of the expected moderation state.
    *
-   * @return string
-   *   The state ID.
+   * @Then the current moderation state should be :state
    */
-  private function getStateId($state_label) {
-    $states = array_filter($this->getWorkflow()->getStates(), function (StateInterface $state) use ($state_label) {
-      return $state->label() === $state_label;
-    });
-    Assert::count($states, 1);
-
-    return reset($states)->id();
-  }
-
-  /**
-   * Creates a node in a specific workflow state and visits it.
-   *
-   * @param string $content_type
-   *   The content type of the node to create.
-   * @param string $state_label
-   *   The label of the workflow state in which to create the node.
-   *
-   * @When I am viewing a :content_type in the :state_label state
-   */
-  public function assertAtContentInState($content_type, $state_label) {
-    $this->node = \Drupal::entityTypeManager()
-      ->getStorage('node')
-      ->create([
-        'type' => $content_type,
-        'title' => (new Random)->string(),
-      ]);
-    $current_user = $this->getUserManager()->getCurrentUser();
-    if ($current_user) {
-      $this->node->setOwnerId($current_user->uid);
-    }
-
-    $this->node
-      ->set('moderation_state', $this->getStateId($state_label))
-      ->save();
-
-    $this->visitPath($this->node->toUrl()->toString());
-    $assert = $this->assertSession();
-    try {
-      $assert->statusCodeEquals(200);
-    }
-    catch (UnsupportedDriverActionException $e) {
-      // This isn't an important assertion, so just swallow the exception.
-    }
-    $assert->pageTextContains($this->node->getTitle());
-  }
-
-  /**
-   * Asserts that the moderation sidebar works.
-   *
-   * @param string $state_label
-   *   The label of the state to which to transition the node.
-   *
-   * @Then I should be able to transition to the :state_label state without leaving the page
-   */
-  public function assertInPlaceStateTransition($state_label) {
-    Assert::notEmpty($this->node);
-
-    $transition = $this->getWorkflow()
-      ->getTransitionFromStateToState($this->node->moderation_state->value, $this->getStateId($state_label));
-
-    $assert = $this->assertSession();
-    $toolbar = $assert->elementExists('css', '#toolbar-bar');
-    $toolbar->clickLink('Tasks');
-    $sidebar = $this->awaitElement('.moderation-sidebar-container');
-
-    // Assert that the review transition has the correct label.
-    // @see \Drupal\lightning_workflow\Update\Update230
-    // @see lightning_workflow_install()
-    $assert->elementExists('named', ['button', 'Send to review'], $sidebar);
-
-    $sidebar->pressButton($transition->label());
-
-    $assert->pageTextContains('The moderation state has been updated.');
-    $current_state = $assert->elementExists('named', ['link', 'Tasks'], $toolbar)->getAttribute('data-label');
-
-    Assert::same($current_state, $transition->to()->label());
+  public function assertCurrentModerationState($state) {
+    $assert_session = $this->assertSession();
+    $toolbar = $assert_session->elementExists('css', '#toolbar-bar');
+    $current_state = $assert_session->elementExists('named', ['link', 'Tasks'], $toolbar)
+      ->getAttribute('data-label');
+    Assert::same($current_state, $state);
   }
 
   /**
