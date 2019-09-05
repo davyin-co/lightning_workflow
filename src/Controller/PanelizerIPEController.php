@@ -2,10 +2,10 @@
 
 namespace Drupal\lightning_workflow\Controller;
 
+use Drupal\content_moderation\ModerationInformationInterface;
 use Drupal\Core\Entity\FieldableEntityInterface;
 use Drupal\panelizer\Controller\PanelizerPanelsIPEController;
 use Drupal\panelizer\PanelizerInterface;
-use Drupal\content_moderation\ModerationInformationInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**

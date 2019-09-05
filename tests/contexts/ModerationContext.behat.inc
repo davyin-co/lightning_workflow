@@ -7,9 +7,9 @@ use Behat\Mink\Element\NodeElement;
 use Behat\Mink\Exception\ElementNotFoundException;
 use Behat\Mink\Exception\ExpectationException;
 use Drupal\DrupalExtension\Context\DrupalSubContextBase;
+use Drupal\node\Entity\NodeType;
 use Drupal\workflows\Entity\Workflow;
 use Webmozart\Assert\Assert;
-use Drupal\node\Entity\NodeType;
 
 /**
  * Contains miscellaneous step definitions for testing moderation UIs.
