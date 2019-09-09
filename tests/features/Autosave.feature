@@ -5,8 +5,8 @@ Feature: Autosave for content editing forms
 
   @javascript @with-module:autosave_form @af96a97b @orca_public
   Scenario: Retrieving autosaved work
-    Given I am logged in as a user with the "access content overview, edit any test content, use editorial transition create_new_draft" permissions
-    And test content:
+    Given I am logged in as a user with the "access content overview, edit any moderated content, use editorial transition create_new_draft" permissions
+    And moderated content:
       | title | moderation_state |
       | Test  | published        |
     When I visit "/admin/content"

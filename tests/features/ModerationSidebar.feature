@@ -3,8 +3,8 @@ Feature: A sidebar for moderating content
 
   @1d83813d @javascript @with-module:toolbar @with-module:moderation_sidebar
   Scenario: Moderating content using the sidebar
-    Given I am logged in as a user with the "access content overview, access toolbar, use moderation sidebar, view any unpublished content, edit any test content, use editorial transition review, use editorial transition publish" permissions
-    And test content:
+    Given I am logged in as a user with the "access content overview, access toolbar, use moderation sidebar, view any unpublished content, edit any moderated content, use editorial transition review, use editorial transition publish" permissions
+    And moderated content:
       | title | moderation_state |
       | Test  | draft            |
     When I visit "/admin/content"

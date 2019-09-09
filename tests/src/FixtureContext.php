@@ -20,8 +20,8 @@ final class FixtureContext extends FixtureBase {
 
     // Create a temporary content type specifically for testing.
     $node_type = NodeType::create([
-      'type' => 'test',
-      'name' => 'Test',
+      'type' => 'moderated',
+      'name' => 'Moderated',
     ]);
     $node_type->setThirdPartySetting('lightning_workflow', 'workflow', 'editorial');
     $node_type->setThirdPartySetting('lightning_workflow', 'autosave', TRUE);
