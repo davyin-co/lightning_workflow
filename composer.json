@@ -19,6 +19,7 @@
         "drupal/inline_entity_form": "^1.0",
         "drupal/schema_metatag": "^1.3",
         "drush/drush": "^9.7",
+        "vijaycs85/drupal-quality-checker": "^1.0",
         "webflo/drupal-core-require-dev": "*",
         "webmozart/assert": "^1.3",
         "weitzman/drupal-test-traits": "^1.2"
