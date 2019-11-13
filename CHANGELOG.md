@@ -1,3 +1,7 @@
+## 3.12.0
+* Hotfixed a bug that could prevent tests from running under SimpleTest. There
+  are no user-facing changes in this version.
+
 ## 3.11.0
 * Added support for Drupal core 8.8.x.
 

@@ -6,6 +6,8 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
  * Tests Lightning Workflow's integration with Moderation Sidebar.
+ *
+ * @group lightning_workflow
  */
 class ModerationSidebarTest extends WebDriverTestBase {
 
