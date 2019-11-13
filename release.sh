@@ -41,10 +41,10 @@ if [[ $BRANCH =~ ^8\.x\-[0-9]+\.x$ ]]; then
   git remote remove drupal-org
 
   if [[ $MARKDOWN ]]; then
-    markdown logs/$DRUPAL_VERSION.md | pbcopy
+    markdown logs/$1.md | pbcopy
     echo "The change log has been copied to the clipboard as HTML."
   else
-    pbcopy < logs/$DRUPAL_VERSION.md
+    pbcopy < logs/$1.md
     echo "The change log has been copied to the clipboard as Markdown. You will need to manually convert it to HTML when creating the release."
     echo "If you want to skip this step next time, install markdown-to-html from https://github.com/cwjohan/markdown-to-html."
   fi
