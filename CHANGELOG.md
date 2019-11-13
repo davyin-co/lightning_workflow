@@ -1,7 +1,10 @@
+## 3.11.0
+* Added support for Drupal core 8.8.x.
+
 ## 3.10.0
 * Changes to internal testing infrastructure, but nothing that should 
   affect users of Lightning Workflow.
-  
+
 ## 3.9.0
 * Added the Autosave Form and Conflict modules as soft dependencies to
   Lightning Workflow. (Issue #3060244)
