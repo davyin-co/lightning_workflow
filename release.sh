@@ -19,8 +19,6 @@ sleep 5
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 if [[ $BRANCH =~ ^8\.x\-[0-9]+\.x$ ]]; then
-  git remote add drupal-org git@git.drupal.org:project/$PROJECT.git
-
   git merge --squash $RELEASE_BRANCH
   git commit --all --quiet --message "$1 Release"
   git push --quiet origin
@@ -37,8 +35,6 @@ if [[ $BRANCH =~ ^8\.x\-[0-9]+\.x$ ]]; then
   git tag $DRUPAL_VERSION
   git push --quiet drupal-org $DRUPAL_VERSION
   echo "Tagged $DRUPAL_VERSION and pushed to drupal.org."
-
-  git remote remove drupal-org
 
   if [[ $MARKDOWN ]]; then
     markdown logs/$1.md | pbcopy

@@ -10,7 +10,7 @@ fi
 VERSION=${BRANCH#release/}
 # Ask git for the most recent semantic version tag, and use it as the version
 # from which to update.
-FROM=$(git tag --list --sort -creatordate | head -n 2 | grep -E '^(\d+.?){3}$')
+FROM=$(git tag --list --sort -creatordate | head -n 2 | grep -E '^(\d+.?){3}')
 
 ./install-drupal.sh
 

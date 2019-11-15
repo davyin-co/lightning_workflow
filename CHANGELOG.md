@@ -1,3 +1,6 @@
+## 3.13.0
+There are no user-facing changes in this version.
+
 ## 3.12.0
 * Hotfixed a bug that could prevent tests from running under SimpleTest. There
   are no user-facing changes in this version.
