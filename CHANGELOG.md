@@ -1,3 +1,9 @@
+## 3.14.0
+* Made Lightning Workflow compatible any installation profile.
+  (Issue #3089223)
+* Fixed a bug where Lightning Scheduler's JavaScript libraries were not
+  properly declared as external. (Issue #3089153)
+
 ## 3.13.0
 There are no user-facing changes in this version.
 
