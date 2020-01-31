@@ -1,5 +1,6 @@
 name: 'Lightning Workflow'
 core: 8.x
+core_version_requirement: '^8 || ^9'
 type: module
 description: 'Tools to improve your content workflow.'
 package: Lightning
