@@ -12,7 +12,7 @@ if [[ -f $SETTINGS ]]; then
 fi
 
 # Install Drupal.
-drush site:install minimal --yes --config ./drush.yml --account-pass admin --db-url $DB_URL
+drush site:install standard --yes --config ./drush.yml --account-pass admin --db-url $DB_URL
 # Install sub-components.
 drush pm-enable autosave_form conflict lightning_workflow lightning_scheduler --yes
 
