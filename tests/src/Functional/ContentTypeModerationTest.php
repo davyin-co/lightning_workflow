@@ -7,6 +7,8 @@ use Drupal\views\Entity\View;
 use Drupal\workflows\Entity\Workflow;
 
 /**
+ * Tests Lightning Workflow's default handling of moderated content types.
+ *
  * @group lightning_workflow
  */
 class ContentTypeModerationTest extends BrowserTestBase {
@@ -37,6 +39,9 @@ class ContentTypeModerationTest extends BrowserTestBase {
     $original_view->delete();
     $duplicate_view->save();
 
+    $page = $this->getSession()->getPage();
+    $assert_session = $this->assertSession();
+
     // Create a content type with moderation applied.
     $this->drupalCreateContentType([
       'type' => 'test',
@@ -46,6 +51,34 @@ class ContentTypeModerationTest extends BrowserTestBase {
         ],
       ],
     ]);
+  }
+
+  /**
+   * Tests adding a new content type to a workflow.
+   */
+  public function testSetWorkflowOnContentTypeCreation() {
+    $page = $this->getSession()->getPage();
+    $assert_session = $this->assertSession();
+
+    $account = $this->drupalCreateUser([
+      'access administration pages',
+      'administer content types',
+    ]);
+    $this->drupalLogin($account);
+
+    $this->drupalGet('/admin/structure/types/add');
+    $page->fillField('Name', 'Jucketry');
+    $page->fillField('type', 'jucketry');
+    $assert_session->fieldValueEquals('workflow', 'Editorial');
+    $assert_session->optionExists('workflow', '- None -');
+    $page->pressButton('Save content type');
+    $assert_session->pageTextContains('The content type Jucketry has been added.');
+
+    /** @var \Drupal\workflows\WorkflowInterface $workflow */
+    $workflow = Workflow::load('editorial');
+    /** @var \Drupal\content_moderation\Plugin\WorkflowType\ContentModerationInterface $plugin */
+    $plugin = $workflow->getTypePlugin();
+    $this->assertTrue($plugin->appliesToEntityTypeAndBundle('node', 'jucketry'));
   }
 
   /**
@@ -75,6 +108,9 @@ class ContentTypeModerationTest extends BrowserTestBase {
     $assert_session->statusCodeEquals(200);
   }
 
+  /**
+   * Tests that reviewers can access unpublished (draft) revisions.
+   */
   public function testReviewerAccess() {
     $assert_session = $this->assertSession();
 
@@ -97,6 +133,8 @@ class ContentTypeModerationTest extends BrowserTestBase {
   }
 
   /**
+   * Tests that reviewers can access the latest unpublished revision.
+   *
    * @depends testReviewerAccess
    */
   public function testLatestUnpublishedRevisionReviewerAccess() {
