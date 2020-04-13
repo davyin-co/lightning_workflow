@@ -4,13 +4,14 @@ namespace Drupal\Tests\lightning_workflow\Functional;
 
 use Drupal\node\NodeInterface;
 use Drupal\Tests\BrowserTestBase;
+use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
 
 /**
- * Tests the moderation_history view.
- *
  * @group lightning_workflow
  */
 class ModerationHistoryTest extends BrowserTestBase {
+
+  use ContentTypeCreationTrait;
 
   /**
    * {@inheritdoc}
@@ -20,20 +21,8 @@ class ModerationHistoryTest extends BrowserTestBase {
     'views',
   ];
 
-  /**
-   * Tests the moderation_history view for a node with revisions.
-   */
   public function testModerationHistory() {
-    $assert_session = $this->assertSession();
-
-    // Create a content type with moderation enabled.
-    $node_type = $this->createContentType([
-      'third_party_settings' => [
-        'lightning_workflow' => [
-          'workflow' => 'editorial',
-        ],
-      ],
-    ]);
+    $node_type = $this->createContentType();
 
     $user_permissions = [
       'administer nodes',
@@ -45,6 +34,10 @@ class ModerationHistoryTest extends BrowserTestBase {
     ];
     $user_a = $this->createUser($user_permissions, 'userA');
     $user_b = $this->createUser($user_permissions, 'userB');
+
+    // Enable moderation for the content type.
+    $node_type->setThirdPartySetting('lightning_workflow', 'workflow', 'editorial');
+    lightning_workflow_node_type_insert($node_type);
 
     $node = $this->createNode([
       'type' => $node_type->id(),
@@ -61,10 +54,10 @@ class ModerationHistoryTest extends BrowserTestBase {
 
     $this->drupalLogin($user_a);
     $this->drupalGet('/node/' . $node->id() . '/moderation-history');
-    $assert_session->statusCodeEquals(200);
-    $date_formatter = $this->container->get('date.formatter');
-    $assert_session->pageTextContainsOnce('Set to review on ' . $date_formatter->format($timestamp_a, 'long') . ' by ' . $user_a->getAccountName());
-    $assert_session->pageTextContainsOnce('Set to published on ' . $date_formatter->format($timestamp_b, 'long') . ' by ' . $user_b->getAccountName());
+    $this->assertSession()->statusCodeEquals(200);
+    $date_formatter = \Drupal::service('date.formatter');
+    $this->assertSession()->pageTextContainsOnce('Set to review on ' . $date_formatter->format($timestamp_a, 'long') . ' by ' . $user_a->getAccountName());
+    $this->assertSession()->pageTextContainsOnce('Set to published on ' . $date_formatter->format($timestamp_b, 'long') . ' by ' . $user_b->getAccountName());
   }
 
   /**
