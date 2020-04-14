@@ -14,6 +14,11 @@ class ModerationSidebarTest extends WebDriverTestBase {
   /**
    * {@inheritdoc}
    */
+  protected $defaultTheme = 'stark';
+
+  /**
+   * {@inheritdoc}
+   */
   protected static $modules = [
     'lightning_workflow',
     'moderation_sidebar',
