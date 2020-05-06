@@ -25,7 +25,7 @@ if [[ $BRANCH =~ ^8\.x\-[0-9]+\.x$ ]]; then
   cd ..
 
   composer update
-  ./make-fixture.sh
+  cp composer.lock tests/fixtures/$1.lock
 
   git add .
   git commit --quiet --message "$1 Release"
