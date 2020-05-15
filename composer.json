@@ -4,7 +4,8 @@
     "description": "Tools to improve your content workflow.",
     "license": "GPL-2.0-or-later",
     "require": {
-        "drupal/autosave_form": "^1.0",
+        "cweagans/composer-patches": "^1.6",
+        "drupal/autosave_form": "1.1",
         "drupal/conflict": "^2.0-alpha2",
         "drupal/core": "^8.6.18 || ~9.0.0",
         "drupal/diff": "^1.0",
@@ -70,7 +71,12 @@
         "installer-types": [
             "bower-asset",
             "npm-asset"
-        ]
+        ],
+        "patches": {
+            "drupal/autosave_form": {
+                "3109317 - Run tests against Drupal 9": "https://www.drupal.org/files/issues/2020-05-15/autosave_form-1.1-core-version-requirement.patch"
+            }
+        }
     },
     "autoload": {
         "psr-4": {
