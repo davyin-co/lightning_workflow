@@ -17,7 +17,7 @@
         "drupal/core-dev": "*",
         "drupal/inline_entity_form": "^1.0",
         "drush/drush": ">=9.7",
-        "oomphinc/composer-installers-extender": "^1.1",
+        "oomphinc/composer-installers-extender": "^1.1 || ^2",
         "vijaycs85/drupal-quality-checker": "^1.0"
     },
     "config": {
