@@ -11,6 +11,6 @@ parameters:
     jsonlint: ~
     phpcpd: ~
     phpcpd:
-      directory: './src'
+      directory: ['./src']
     phpcs:
       standard: Drupal

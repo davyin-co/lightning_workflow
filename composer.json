@@ -93,23 +93,17 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "post-install-cmd": [
-            "@push",
-            "@drupal-scaffold"
-        ],
         "post-update-cmd": [
-            "@push",
-            "@drupal-scaffold"
+            "@putenv DIR=./docroot/modules/lightning_workflow",
+            "mkdir -p $DIR",
+            "ln -s -f $PWD/config $DIR",
+            "ln -s -f $PWD/images $DIR",
+            "ln -s -f $PWD/modules $DIR",
+            "ln -s -f $PWD/src $DIR",
+            "ln -s -f $PWD/tests $DIR",
+            "find $PWD -name 'lightning_workflow.*' -depth 1 -exec ln -s -f {} $DIR ';'",
+            "cp -f phpunit.xml ./docroot/core"
         ],
-        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
-        "nuke": "rm -r -f docroot vendor",
-        "pull": "cp -R -f ./docroot/modules/contrib/lightning_workflow/* .",
-        "push": [
-            "rm -r -f ./docroot/modules/contrib/lightning_workflow",
-            "mkdir -p ./docroot/modules/contrib/lightning_workflow",
-            "@composer archive --file lightning_workflow",
-            "tar -x -f lightning_workflow.tar -C ./docroot/modules/contrib/lightning_workflow",
-            "rm lightning_workflow.tar"
-        ]
+        "nuke": "rm -r -f docroot vendor"
     }
 }
