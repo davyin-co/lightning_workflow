@@ -20,7 +20,7 @@ env:
     # release, dev-develop to track Dev/HEAD, or any other Composer version
     # string.
     # @see https://getcomposer.org/doc/articles/versions.md
-    - ORCA_VERSION=dev-master
+    - ORCA_VERSION=v2.11.3
     - ORCA_TELEMETRY_ENABLE=TRUE
 
 matrix:
@@ -45,6 +45,7 @@ matrix:
     - env: ORCA_JOB=CORE_NEXT
 
 before_install:
+  - composer self-update 1.10.16
   - composer create-project --no-dev acquia/orca ../orca "$ORCA_VERSION"
   - ../orca/bin/travis/before_install.sh
 
