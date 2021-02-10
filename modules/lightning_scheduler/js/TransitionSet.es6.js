@@ -1,8 +1,6 @@
 import { Component, createElement } from 'react';
 import dateFormat from 'dateformat';
 
-const t = Drupal.t;
-
 export default class extends Component
 {
     /**
@@ -72,7 +70,7 @@ export default class extends Component
 
         // Provide a detailed title so we can remove specific transitions in
         // testing.
-        const remove_title = t('Remove transition to @state on @date at @time', {
+        const remove_title = Drupal.t('Remove transition to @state on @date at @time', {
             '@state': state,
             '@date': date,
             '@time': time,
@@ -83,8 +81,8 @@ export default class extends Component
         // TODO: It'd be nice to find a way to make this entire layout translatable.
         return (
             <div className={ class_list.join(' ') }>
-                { t('Change to') } <b>{ state }</b> { t('on') } { date } { t('at') } { time }
-                &nbsp;<a title={ remove_title } href="#" onClick={ onRemove }>{ t('remove') }</a>
+                { Drupal.t('Change to') } <b>{ state }</b> { Drupal.t('on') } { date } { Drupal.t('at') } { time }
+                &nbsp;<a title={ remove_title } href="#" onClick={ onRemove }>{ Drupal.t('remove') }</a>
             </div>
         );
     }
@@ -98,11 +96,11 @@ export default class extends Component
     {
         // TODO: It'd be nice to find a way to make this entire layout translatable.
         return createElement('div', { className: 'scheduled-transition' },
-            t('Change to'),
+            Drupal.t('Change to'),
             this.renderStateControl(),
-            t('on'),
+            Drupal.t('on'),
             this.renderDateControl(),
-            t('at'),
+            Drupal.t('at'),
             this.renderTimeControl(),
             this.renderFormActions()
         );
@@ -130,7 +128,7 @@ export default class extends Component
 
         return (
             <label>
-                <span hidden>{ t('Scheduled moderation state') }</span>
+                <span hidden>{ Drupal.t('Scheduled moderation state') }</span>
                 <select defaultValue={ value } onChange={ onChange }>{ this.stateOptions }</select>
             </label>
         );
@@ -165,7 +163,7 @@ export default class extends Component
 
         return (
             <label>
-                <span hidden>{ t('Scheduled transition date') }</span>
+                <span hidden>{ Drupal.t('Scheduled transition date') }</span>
                 <input required defaultValue={ value } type="date" onChange={ onChange } />
             </label>
         );
@@ -205,7 +203,7 @@ export default class extends Component
 
         return (
             <label>
-                <span hidden>{ t('Scheduled transition time') }</span>
+                <span hidden>{ Drupal.t('Scheduled transition time') }</span>
                 <input required defaultValue={ value } type="time" onChange={ onChange } step={ this.props.step } />
             </label>
         );
@@ -245,9 +243,9 @@ export default class extends Component
 
         return (
           <span>
-              <button className="button" title={ t('Save transition') } onClick={ onSave }>{ t('Save') }</button>
-              &nbsp;{ t('or') }&nbsp;
-              <a title={ t('Cancel transition') } href="#" onClick={ onCancel }>{ t('cancel') }</a>
+              <button className="button" title={ Drupal.t('Save transition') } onClick={ onSave }>{ Drupal.t('Save') }</button>
+              &nbsp;{ Drupal.t('or') }&nbsp;
+              <a title={ Drupal.t('Cancel transition') } href="#" onClick={ onCancel }>{ Drupal.t('cancel') }</a>
           </span>
         );
     }
@@ -301,8 +299,8 @@ export default class extends Component
         };
 
         const link_text = this.state.transitions.length
-            ? t('add another')
-            : t('Schedule a status change');
+            ? Drupal.t('add another')
+            : Drupal.t('Schedule a status change');
 
         return <a href="#" onClick={ onAdd }>{ link_text }</a>
     }
