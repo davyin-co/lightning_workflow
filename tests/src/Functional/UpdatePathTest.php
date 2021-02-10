@@ -3,6 +3,7 @@
 namespace Drupal\Tests\lightning_workflow\Functional;
 
 use Drupal\FunctionalTests\Update\UpdatePathTestBase;
+use Drupal\views\Entity\View;
 use Drush\TestTraits\DrushTestTrait;
 
 /**
@@ -28,8 +29,12 @@ class UpdatePathTest extends UpdatePathTestBase {
    * Tests Lightning Workflow's database update path.
    */
   public function testUpdatePath() {
+    $this->assertNull(View::load('moderated_content'));
+
     $this->runUpdates();
     $this->drush('update:lightning', [], ['yes' => NULL]);
+
+    $this->assertInstanceOf(View::class, View::load('moderated_content'));
   }
 
 }

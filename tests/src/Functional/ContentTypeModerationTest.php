@@ -3,7 +3,6 @@
 namespace Drupal\Tests\lightning_workflow\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\views\Entity\View;
 use Drupal\workflows\Entity\Workflow;
 
 /**
@@ -34,18 +33,6 @@ class ContentTypeModerationTest extends BrowserTestBase {
   protected function setUp() {
     parent::setUp();
     $this->drupalPlaceBlock('local_tasks_block');
-
-    // Allow the content view to filter by moderation state. This is done when
-    // the view is first created, so we need to create a duplicate of the
-    // content view in order for this to work.
-    // @see lightning_workflow_view_presave()
-    $original_view = View::load('content');
-    $duplicate_view = $original_view->createDuplicate()->set('id', 'content');
-    $original_view->delete();
-    $duplicate_view->save();
-
-    $page = $this->getSession()->getPage();
-    $assert_session = $this->assertSession();
 
     // Create a content type with moderation applied.
     $this->drupalCreateContentType([
@@ -238,9 +225,6 @@ class ContentTypeModerationTest extends BrowserTestBase {
    * @depends testEnableModerationForContentType
    */
   public function testContentOverviewActions() {
-    $assert_session = $this->assertSession();
-    $page = $this->getSession()->getPage();
-
     $account = $this->drupalCreateUser([], NULL, TRUE);
     $this->drupalLogin($account);
 
@@ -261,11 +245,8 @@ class ContentTypeModerationTest extends BrowserTestBase {
     ]);
 
     $this->drupalGet('/admin/content');
-    $page->selectFieldOption('moderation_state', 'Draft');
 
-    $assert_session->elementExists('css', '.views-exposed-form .form-actions input[type = "submit"]')
-      ->press();
-
+    $assert_session = $this->assertSession();
     $assert_session->optionNotExists('Action', 'node_publish_action');
     $assert_session->optionNotExists('Action', 'node_unpublish_action');
   }

@@ -16,19 +16,10 @@ class Update8006Test extends UpdatePathTestBase {
    * {@inheritdoc}
    */
   protected function setDatabaseDumpFiles() {
-    $this->databaseDumpFiles = [];
-
-    $fixture = $this->getDrupalRoot() . '/core/modules/system/tests/fixtures/update/drupal-8.8.0.bare.standard.php.gz';
-
-    // If we're on Drupal 8.8 or later, use its base fixture. Otherwise, use the
-    // older 8.4 base fixture included with versions of core before 8.8.
-    if (file_exists($fixture)) {
-      $this->databaseDumpFiles[] = $fixture;
-    }
-    else {
-      $this->databaseDumpFiles[] = str_replace('8.8.0', '8.4.0', $fixture);
-    }
-    $this->databaseDumpFiles[] = __DIR__ . '/../../fixtures/Update8006Test.php.gz';
+    $this->databaseDumpFiles = [
+      $this->getDrupalRoot() . '/core/modules/system/tests/fixtures/update/drupal-8.8.0.bare.standard.php.gz',
+      __DIR__ . '/../../fixtures/Update8006Test.php.gz',
+    ];
   }
 
   /**

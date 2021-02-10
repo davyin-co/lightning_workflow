@@ -16,6 +16,7 @@
         "composer/installers": "^1.9",
         "drupal/core-composer-scaffold": "*",
         "drupal/core-dev": "*",
+        "drupal/devel": "^4.1",
         "drupal/inline_entity_form": "^1.0",
         "drush/drush": ">=9.7",
         "vijaycs85/drupal-quality-checker": "^1.0"
@@ -87,7 +88,7 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "scripts": {
-        "post-update-cmd": [
+        "post-install-cmd": [
             "@putenv DIR=./docroot/modules/lightning_workflow",
             "mkdir -p $DIR",
             "ln -s -f $PWD/config $DIR",

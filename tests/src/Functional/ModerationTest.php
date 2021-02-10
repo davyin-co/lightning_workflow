@@ -3,7 +3,6 @@
 namespace Drupal\Tests\lightning_workflow\Functional;
 
 use Drupal\Tests\BrowserTestBase;
-use Drupal\views\Entity\View;
 
 /**
  * Tests basic content moderation operations.
@@ -32,12 +31,6 @@ class ModerationTest extends BrowserTestBase {
    */
   protected function setUp() {
     parent::setUp();
-
-    // Allow the content view to filter by moderation state.
-    /** @var \Drupal\views\ViewEntityInterface $view */
-    $view = View::load('content')->enforceIsNew();
-    lightning_workflow_view_presave($view);
-    $view->enforceIsNew(FALSE)->save();
 
     $this->drupalCreateContentType([
       'type' => 'moderated',
@@ -122,26 +115,6 @@ class ModerationTest extends BrowserTestBase {
     $this->drupalLogout();
     $this->drupalGet('/node');
     $assert_session->linkNotExists('Beta');
-  }
-
-  /**
-   * Tests filtering content by moderation state.
-   */
-  public function testFilteringByModerationState() {
-    $assert_session = $this->assertSession();
-    $page = $this->getSession()->getPage();
-
-    $account = $this->drupalCreateUser([
-      'access content overview',
-    ]);
-    $this->drupalLogin($account);
-
-    $this->drupalGet('/admin/content');
-    $page->selectFieldOption('moderation_state', 'In review');
-    $assert_session->elementExists('css', '.views-exposed-form')->submit();
-    $assert_session->linkExists('Alpha');
-    $assert_session->linkNotExists('Beta');
-    $assert_session->linkNotExists('Charlie');
   }
 
 }
