@@ -31,21 +31,21 @@
             "dev-8.x-3.x": "3.x-dev"
         },
         "drupal-scaffold": {
-            "locations": {
-                "web-root": "docroot/"
-            },
             "file-mapping": {
-                "[project-root]/.gitattributes": false,
                 "[project-root]/.editorconfig": false,
-                "[web-root]/example.gitignore": false,
+                "[project-root]/.gitattributes": false,
                 "[web-root]/.csslintrc": false,
+                "[web-root]/INSTALL.txt": false,
+                "[web-root]/example.gitignore": false,
                 "[web-root]/modules/README.txt": false,
                 "[web-root]/profiles/README.txt": false,
+                "[web-root]/robots.txt": false,
                 "[web-root]/sites/README.txt": false,
                 "[web-root]/themes/README.txt": false,
-                "[web-root]/INSTALL.txt": false,
-                "[web-root]/robots.txt": false,
                 "[web-root]/web.config": false
+            },
+            "locations": {
+                "web-root": "docroot/"
             }
         },
         "enable-patching": true,
