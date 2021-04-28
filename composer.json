@@ -5,7 +5,6 @@
     "license": "GPL-2.0-or-later",
     "require": {
         "drupal/autosave_form": "^1.2",
-        "drupal/conflict": "^2.0-alpha2",
         "drupal/core": "^8.8.10 || ^9.0.6",
         "drupal/diff": "^1.0",
         "drupal/lightning_core": "3.* || 4.* || 5.*",
