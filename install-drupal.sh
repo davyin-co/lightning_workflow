@@ -19,9 +19,6 @@ drush pm-enable autosave_form conflict lightning_workflow lightning_scheduler --
 # Make settings writable.
 chmod +w $SITE_DIR $SETTINGS
 
-# Copy development settings into the site directory.
-cp settings.local.php $SITE_DIR
-
 # Add Acquia Cloud subscription info to settings.php.
 echo "if (file_exists('/var/www/site-php')) {" >> $SETTINGS
 echo "  require '/var/www/site-php/workflownightly/workflownightly-settings.inc';" >> $SETTINGS
@@ -30,6 +27,3 @@ echo "}" >> $SETTINGS
 echo "else {" >> $SETTINGS
 echo "  require __DIR__ . '/settings.local.php';" >> $SETTINGS
 echo "}" >> $SETTINGS
-
-# Copy PHPUnit configuration into core directory.
-cp -f phpunit.xml ./docroot/core
