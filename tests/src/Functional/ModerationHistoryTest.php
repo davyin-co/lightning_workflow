@@ -66,13 +66,11 @@ class ModerationHistoryTest extends BrowserTestBase {
       'moderation_state' => 'draft',
     ]);
 
-    $timestamp_a = time();
-    $timestamp_b = $timestamp_a + 10;
-
     // Make two revisions with two different users.
     $this->drupalLogin($user_a);
     $this->drupalGet($node->toUrl('edit-form'));
     $page->selectFieldOption('moderation_state[0][state]', 'review');
+    $timestamp_a = time();
     $page->fillField('Date', date('Y-m-d', $timestamp_a));
     $page->fillField('Time', date('H:i:s', $timestamp_a));
     $page->pressButton('Save');
@@ -81,6 +79,7 @@ class ModerationHistoryTest extends BrowserTestBase {
     $this->drupalLogin($user_b);
     $this->drupalGet($node->toUrl('edit-form'));
     $page->selectFieldOption('moderation_state[0][state]', 'published');
+    $timestamp_b = time();
     $page->fillField('Date', date('Y-m-d', $timestamp_b));
     $page->fillField('Time', date('H:i:s', $timestamp_b));
     $page->pressButton('Save');

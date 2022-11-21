@@ -6,7 +6,6 @@
     "require": {
         "drupal/autosave_form": "^1.2",
         "drupal/conflict": "^2.0-alpha2",
-        "drupal/core": "^8.8.10 || ^9.0.6",
         "drupal/diff": "^1.0",
         "drupal/lightning_core": "3.* || 4.* || 5.*",
         "drupal/moderation_dashboard": "^1.0",
@@ -29,5 +28,9 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "require-dev": {
+        "drush/drush": "^10",
+        "drupal/inline_entity_form": "^1"
+    }
 }

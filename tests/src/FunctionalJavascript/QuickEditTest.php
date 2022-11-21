@@ -2,6 +2,7 @@
 
 namespace Drupal\Tests\lightning_workflow\FunctionalJavascript;
 
+use Behat\Mink\Element\TraversableElement;
 use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
 
 /**
@@ -105,8 +106,8 @@ class QuickEditTest extends WebDriverTestBase {
     $assert_session->addressMatches('|^/node/[0-9]+/latest$|');
     $this->assertQuickEditEnabled();
 
-    $contextual_links = $assert_session->elementExists('css', 'div[data-block-plugin-id="system_main_block"] ul.contextual-links');
-    $assert_session->elementExists('named', ['link', 'Quick edit'], $contextual_links);
+    $link_exists = $assert_session->waitForElement('css', 'div[data-block-plugin-id="system_main_block"] ul.contextual-links li.quickedit');
+    $this->assertNotEmpty($link_exists);
   }
 
   /**
