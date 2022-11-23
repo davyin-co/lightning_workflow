@@ -13,19 +13,32 @@ abstract class MigrationTestBase extends UpdatePathTestBase {
    * {@inheritdoc}
    */
   protected function setDatabaseDumpFiles() {
-    $this->databaseDumpFiles = [];
-
-    $fixture = $this->getDrupalRoot() . '/core/modules/system/tests/fixtures/update/drupal-8.8.0.bare.standard.php.gz';
-
-    // If we're on Drupal 8.8 or later, use its base fixture. Otherwise, use the
-    // older 8.4 base fixture included with versions of core before 8.8.
-    if (file_exists($fixture)) {
-      $this->databaseDumpFiles[] = $fixture;
+    if (str_starts_with(\Drupal::VERSION, '10.')) {
+      $core_fixture = 'drupal-9.4.0.bare.standard.php.gz';
     }
     else {
-      $this->databaseDumpFiles[] = str_replace('8.8.0', '8.4.0', $fixture);
+      $core_fixture = 'drupal-8.8.0.bare.standard.php.gz';
     }
-    $this->databaseDumpFiles[] = __DIR__ . '/../../fixtures/BaseFieldMigrationTest.php.gz';
+    $this->databaseDumpFiles = [
+      $this->getDrupalRoot() . '/core/modules/system/tests/fixtures/update/' . $core_fixture,
+      __DIR__ . '/../../fixtures/BaseFieldMigrationTest.php.gz',
+    ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
+
+    /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager */
+    $base_fields = $this->container->get('entity_field.manager')
+      ->getBaseFieldDefinitions('content_moderation_state');
+
+    /** @var \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface $updater */
+    $updater = $this->container->get('entity.definition_update_manager');
+    $updater->updateFieldStorageDefinition($base_fields['id']);
+    $updater->updateFieldStorageDefinition($base_fields['revision_id']);
   }
 
   /**

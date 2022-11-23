@@ -16,10 +16,32 @@ class Update8006Test extends UpdatePathTestBase {
    * {@inheritdoc}
    */
   protected function setDatabaseDumpFiles() {
+    if (str_starts_with(\Drupal::VERSION, '10.')) {
+      $core_fixture = 'drupal-9.4.0.bare.standard.php.gz';
+    }
+    else {
+      $core_fixture = 'drupal-8.8.0.bare.standard.php.gz';
+    }
     $this->databaseDumpFiles = [
-      $this->getDrupalRoot() . '/core/modules/system/tests/fixtures/update/drupal-8.8.0.bare.standard.php.gz',
+      $this->getDrupalRoot() . '/core/modules/system/tests/fixtures/update/' . $core_fixture,
       __DIR__ . '/../../fixtures/Update8006Test.php.gz',
     ];
+  }
+
+  /**
+   * {@inheritdoc}
+   */
+  protected function setUp(): void {
+    parent::setUp();
+
+    /** @var \Drupal\Core\Entity\EntityFieldManagerInterface $field_manager */
+    $base_fields = $this->container->get('entity_field.manager')
+      ->getBaseFieldDefinitions('content_moderation_state');
+
+    /** @var \Drupal\Core\Entity\EntityDefinitionUpdateManagerInterface $updater */
+    $updater = $this->container->get('entity.definition_update_manager');
+    $updater->updateFieldStorageDefinition($base_fields['id']);
+    $updater->updateFieldStorageDefinition($base_fields['revision_id']);
   }
 
   /**

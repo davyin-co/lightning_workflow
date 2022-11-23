@@ -20,9 +20,13 @@ class UpdatePathTest extends UpdatePathTestBase {
    * {@inheritdoc}
    */
   protected function setDatabaseDumpFiles() {
-    $this->databaseDumpFiles = [
-      __DIR__ . '/../../fixtures/drupal-8.8.0-update-from-1.0.0-rc2.php.gz',
-    ];
+    if (str_starts_with(\Drupal::VERSION, '10.')) {
+      $fixture = __DIR__ . '/../../fixtures/drupal-9.4.0-update-from-1.0.0-rc2.php.gz';
+    }
+    else {
+      $fixture = __DIR__ . '/../../fixtures/drupal-8.8.0-update-from-1.0.0-rc2.php.gz';
+    }
+    $this->databaseDumpFiles = [$fixture];
   }
 
   /**
