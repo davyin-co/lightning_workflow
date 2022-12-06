@@ -28,7 +28,7 @@ class ModerationDashboardTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // At least one moderated content type must exist in order for the dashboard

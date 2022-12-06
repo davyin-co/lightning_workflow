@@ -33,7 +33,7 @@ class ScheduledTransitionTest extends BrowserTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     // The editorial workflow is packaged with Lightning Workflow, so install

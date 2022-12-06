@@ -40,7 +40,7 @@ class Update230Test extends KernelTestBase {
   /**
    * {@inheritdoc}
    */
-  protected function setUp() {
+  protected function setUp(): void {
     parent::setUp();
 
     $this->update = $this->container->get('class_resolver')
