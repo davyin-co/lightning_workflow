@@ -8,15 +8,6 @@ services:
       - '@logger.channel.cron'
       - '@string_translation'
 
-  lightning_scheduler.migrator:
-    class: 'Drupal\lightning_scheduler\Migrator'
-    arguments:
-      - '@entity_type.manager'
-      - '@database'
-      - '@state'
-      - '@messenger'
-      - '@string_translation'
-
   # To facilitate testing, decorate the datetime.time service with an
   # implementation that can return an arbitrary request time from state.
   lightning_scheduler.datetime.time:
