@@ -10,6 +10,8 @@ use Drupal\Tests\BrowserTestBase;
  * Tests integration with autosave_form.
  *
  * @group lightning_workflow
+ *
+ * @requires module autosave_form
  */
 class AutosaveIntegrationTest extends BrowserTestBase {
 

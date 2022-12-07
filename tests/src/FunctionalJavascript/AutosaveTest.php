@@ -9,6 +9,8 @@ use Drupal\FunctionalJavascriptTests\WebDriverTestBase;
  * Tests Lightning Workflow's integration with Autosave Form.
  *
  * @group lightning_workflow
+ *
+ * @requires module autosave_form
  */
 class AutosaveTest extends WebDriverTestBase {
 
