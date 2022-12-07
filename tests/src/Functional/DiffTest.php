@@ -8,6 +8,8 @@ use Drupal\Tests\BrowserTestBase;
  * Tests Lightning Workflow's integration with Diff.
  *
  * @group lightning_workflow
+ *
+ * @requires module diff
  */
 class DiffTest extends BrowserTestBase {
 

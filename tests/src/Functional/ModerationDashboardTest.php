@@ -8,6 +8,8 @@ use Drupal\Tests\BrowserTestBase;
  * Tests Lightning Workflow's integration with Moderation Dashboard.
  *
  * @group lightning_workflow
+ *
+ * @requires module moderation_dashboard
  */
 class ModerationDashboardTest extends BrowserTestBase {
 
