@@ -10,6 +10,8 @@ use Drupal\Tests\node\Traits\ContentTypeCreationTrait;
  * Tests default visibility of the content_moderation_control extra field.
  *
  * @group lightning_workflow
+ *
+ * @requires module moderation_sidebar
  */
 class ModerationControlTest extends KernelTestBase {
 
