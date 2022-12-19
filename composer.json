@@ -4,7 +4,7 @@
     "description": "Tools to improve your content workflow.",
     "license": "GPL-2.0-or-later",
     "require": {
-        "drupal/lightning_core": "^5"
+        "drupal/lightning_core": "^6"
     },
     "require-dev": {
         "drupal/autosave_form": "^1.2",
