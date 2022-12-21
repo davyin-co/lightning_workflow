@@ -7,4 +7,3 @@ configure: lightning_scheduler.settings
 dependencies:
   - drupal:content_moderation
   - drupal:datetime
-  - lightning_core:lightning_core

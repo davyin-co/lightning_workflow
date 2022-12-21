@@ -2,6 +2,8 @@
 
 namespace Drupal\lightning_workflow\Routing;
 
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Routing\RouteMatchInterface;
 use Drupal\Core\Routing\RouteSubscriberBase;
 use Drupal\lightning_workflow\Controller\PanelizerIPEController;
 use Symfony\Component\Routing\RouteCollection;
@@ -41,6 +43,28 @@ class RouteSubscriber extends RouteSubscriberBase {
     $load_latest_revision('image.upload');
     $load_latest_revision('image.info');
     $load_latest_revision('quickedit.field_form');
+  }
+
+  /**
+   * Checks if we are currently viewing an entity at its canonical route.
+   *
+   * @param \Drupal\Core\Entity\EntityInterface $entity
+   *   The entity.
+   * @param \Drupal\Core\Routing\RouteMatchInterface $route_match
+   *   (optional) The current route match.
+   *
+   * @return bool
+   *   TRUE if we are at the entity's canonical route, FALSE otherwise.
+   */
+  public static function isViewing(EntityInterface $entity, RouteMatchInterface $route_match = NULL) {
+    $route_match = $route_match ?: \Drupal::routeMatch();
+
+    $entity_type = $entity->getEntityTypeId();
+
+    return (
+      $route_match->getRouteName() == "entity.$entity_type.canonical" &&
+      $route_match->getRawParameter($entity_type) == $entity->id()
+    );
   }
 
 }

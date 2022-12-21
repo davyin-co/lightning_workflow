@@ -64,8 +64,8 @@ class TimeStepTest extends WebDriverTestBase {
     $this->drupalLogin($this->createUser([], NULL, TRUE));
 
     foreach ($steps as $step) {
-      $this->drupalGet('/admin/config/system/lightning');
-      $page->clickLink('Scheduler');
+      $this->drupalGet('/admin/config/workflow');
+      $page->clickLink('Lightning Scheduler');
       $page->selectFieldOption('time_step', $step['time_step']);
       $page->pressButton('Save configuration');
 

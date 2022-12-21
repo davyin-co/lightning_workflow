@@ -12,9 +12,9 @@ use Drupal\Core\Entity\EntityPublishedInterface;
 use Drupal\Core\Entity\RevisionableInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Serialization\Yaml;
-use Drupal\lightning_core\Routing\RouteSubscriber;
 use Drupal\lightning_workflow\Override;
 use Drupal\lightning_workflow\Plugin\views\field\NodeBulkForm;
+use Drupal\lightning_workflow\Routing\RouteSubscriber;
 use Drupal\node\Entity\NodeType;
 use Drupal\node\NodeTypeInterface;
 use Drupal\views\Entity\View;
@@ -165,6 +165,25 @@ function lightning_workflow_preprocess_field(array &$variables) {
       unset($variables['attributes']['data-quickedit-field-id']);
     }
   }
+}
+
+/**
+ * Implements template_preprocess_block().
+ */
+function lightning_workflow_preprocess_block(array &$variables) {
+  $variables['attributes']['data-block-plugin-id'] = $variables['elements']['#plugin_id'];
+}
+
+/**
+ * Implements hook_local_tasks_alter().
+ */
+function lightning_workflow_local_tasks_alter(array &$local_tasks) {
+  // When Content Moderation is installed, the "Edit" tab may have different
+  // text, depending on the circumstances. In order for Behat tests to visit
+  // the edit form, there must be a consistent way to target the tab. Rather
+  // than rely on the text, set a consistent 'rel' attribute which step
+  // definitions can reliably target.
+  $local_tasks['entity.node.edit_form']['options']['attributes']['rel'] = 'edit-form';
 }
 
 /**

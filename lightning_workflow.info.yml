@@ -5,4 +5,4 @@ description: 'Tools to improve your content workflow.'
 package: Lightning
 dependencies:
   - drupal:content_moderation
-  - lightning_core:lightning_core
+  - drupal:node

@@ -5,6 +5,7 @@
  * Contains hook implementations for Lightning Scheduler.
  */
 
+use Drupal\content_moderation\Plugin\Field\FieldWidget\ModerationStateWidget as ContentModerationStateWidget;
 use Drupal\Core\Cache\CacheCollectorInterface;
 use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\ContentEntityInterface;
@@ -14,7 +15,6 @@ use Drupal\Core\Field\BaseFieldDefinition;
 use Drupal\Core\Field\FieldStorageDefinitionInterface;
 use Drupal\Core\Update\UpdateKernel;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
-use Drupal\lightning_core\OverrideHelper;
 use Drupal\lightning_scheduler\Plugin\Field\FieldWidget\ModerationStateWidget;
 
 /**
@@ -117,7 +117,9 @@ function lightning_scheduler_entity_base_field_info(EntityTypeInterface $entity_
  * Implements hook_field_widget_info_alter().
  */
 function lightning_scheduler_field_widget_info_alter(array &$info) {
-  OverrideHelper::pluginClass($info['moderation_state_default'], ModerationStateWidget::class);
+  if ($info['moderation_state_default']['class'] === ContentModerationStateWidget::class) {
+    $info['moderation_state_default']['class'] = ModerationStateWidget::class;
+  }
 }
 
 /**

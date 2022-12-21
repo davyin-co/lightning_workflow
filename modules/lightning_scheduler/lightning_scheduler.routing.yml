@@ -4,4 +4,4 @@ lightning_scheduler.settings:
     _title: Lightning Scheduler
     _form: '\Drupal\lightning_scheduler\Form\SettingsForm'
   requirements:
-    _is_administrator: 'true'
+    _permission: 'administer site configuration'

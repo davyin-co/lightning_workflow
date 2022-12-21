@@ -23,6 +23,7 @@ class ModerationTest extends BrowserTestBase {
   protected static $modules = [
     'block',
     'lightning_workflow',
+    'path',
     'views',
   ];
 
