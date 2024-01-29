@@ -11,6 +11,9 @@
         "drupal/moderation_dashboard": "^1.0",
         "drupal/moderation_sidebar": "^1.2"
     },
+    "replace": {
+        "drupal/lightning_workflow": "*"
+    },
     "require-dev": {
         "composer/installers": "^1.9",
         "drupal/core-composer-scaffold": "*",
