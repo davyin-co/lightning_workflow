@@ -11,6 +11,9 @@
         "drupal/moderation_sidebar": "^1.0",
         "oomphinc/composer-installers-extender": "^1.1"
     },
+    "replace": {
+        "drupal/lightning_workflow": "*"
+    },
     "require-dev": {
         "acquia/lightning_dev": "dev-8.x-1.x",
         "drupal/inline_entity_form": "^1.0",
