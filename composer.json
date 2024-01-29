@@ -30,6 +30,9 @@
         "drupal/lightning_core": "1.x-dev || 2.x-dev",
         "drupal/diff": "^1.0"
     },
+    "replace": {
+        "drupal/lightning_workflow": "*"
+    },
     "config": {
         "preferred-install": {
             "drupal/core": "dist"
