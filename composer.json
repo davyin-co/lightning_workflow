@@ -9,7 +9,7 @@
         "drupal/diff": "^1.0",
         "drupal/lightning_core": "2.x-dev",
         "drupal/moderation_sidebar": "^1.0",
-        "oomphinc/composer-installers-extender": "^1.1"
+        "oomphinc/composer-installers-extender": "^1.1 || ^2.0"
     },
     "replace": {
         "drupal/lightning_workflow": "*"
