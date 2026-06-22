@@ -17,8 +17,3 @@ services:
     arguments:
       - '@request_stack'
       - '@state'
-    # Workaround for serializing decorated services. Remove when either
-    # https://www.drupal.org/project/drupal/issues/2896993 or
-    # https://www.drupal.org/project/drupal/issues/2531564 are fixed.
-    properties:
-      _serviceId: datetime.time

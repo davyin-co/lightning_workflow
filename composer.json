@@ -1,8 +1,13 @@
 {
-    "name": "drupal/lightning_workflow",
+    "name": "davyin/lightning_workflow",
     "type": "drupal-module",
     "description": "Tools to improve your content workflow.",
     "license": "GPL-2.0-or-later",
+    "homepage": "https://github.com/davyin-co/lightning_workflow",
+    "support": {
+        "issues": "https://github.com/davyin-co/lightning_workflow/issues",
+        "source": "https://git.drupalcode.org/project/lightning_workflow.git"
+    },
     "require": {
         "drupal/lightning_core": "^6"
     },

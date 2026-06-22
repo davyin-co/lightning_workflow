@@ -22,7 +22,7 @@ use Drupal\lightning_scheduler\Plugin\Field\FieldWidget\ModerationStateWidget;
  */
 function lightning_scheduler_library_info_alter(array &$libraries, $extension) {
   if ($extension === 'seven') {
-    $dir = drupal_get_path('module', 'lightning_scheduler');
+    $dir = \Drupal::service('extension.list.module')->getPath('lightning_scheduler');
 
     $libraries['lightning_scheduler.widget'] = [
       'css' => [
